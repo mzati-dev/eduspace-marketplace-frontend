@@ -23,6 +23,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [activeChatId, setActiveChatId] = useState<string | null>(null);
     const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+    const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 
 
 
@@ -263,6 +264,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         isLoadingTutors,
         unreadMessageCount,
         setUnreadMessageCount,
+        unreadNotificationCount,
+        setUnreadNotificationCount,
 
     };
 

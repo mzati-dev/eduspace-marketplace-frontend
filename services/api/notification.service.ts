@@ -15,4 +15,10 @@ export class NotificationApiService extends BaseApiService {
     public async markAllAsRead(): Promise<{ affected: number }> {
         return this.post<{ affected: number }>(API_ENDPOINTS.NOTIFICATIONS.MARK_ALL_AS_READ, {});
     }
+
+    // Add this inside your NotificationApiService class
+
+    public async getUnreadCount(): Promise<{ count: number }> {
+        return this.get<{ count: number }>(API_ENDPOINTS.NOTIFICATIONS.GET_UNREAD_COUNT);
+    }
 }

@@ -1,0 +1,75 @@
+# Understood. Focusing strictly on notifications that are not related to direct messages. Here are some sensible notifications for your platform that add value to the student and teacher experience.
+
+# ## For Students 🎓
+
+#     Purchase Confirmation
+
+#         When: Immediately after a student successfully buys a lesson.
+
+#         Title: Purchase Successful!
+
+#         Description: "Your purchase of '[Lesson Title]' is complete. You can access it now in your personal library."
+
+#         Why it makes sense: This is a critical transactional receipt. It gives the student confidence in their purchase and a clear next step.
+
+#     New Lesson From a Teacher
+
+#         When: A teacher the student has purchased from before publishes a new lesson.
+
+#         Title: New Lesson from [Teacher's Name]
+
+#         Description: "[Teacher's Name] just published a new lesson you might like: '[Lesson Title]'."
+
+#         Why it makes sense: This drives repeat business by alerting interested students to new, relevant content from teachers they already trust.
+
+#     Rating Reminder
+
+#         When: A few days after a student has purchased a lesson.
+
+#         Title: How was '[Lesson Title]'?
+
+#         Description: "Share your feedback by rating the lesson. Your review helps other students and supports the teacher."
+
+#         Why it makes sense: This helps build a strong community feedback system, which increases the quality and trustworthiness of your platform.
+
+# ## For Teachers 👨‍🏫
+
+#     Lesson Sale Confirmation 💰
+
+#         When: A student buys one of the teacher's lessons.
+
+#         Title: You've Made a Sale!
+
+#         Description: "Congratulations! Your lesson '[Lesson Title]' was just purchased by a student."
+
+#         Why it makes sense: This is a powerful and motivating notification for teachers, providing immediate positive reinforcement and a real-time update on their sales.
+
+#     New Lesson Rating Received ⭐
+
+#         When: A student submits a rating for one of the teacher's lessons.
+
+#         Title: New Rating for '[Lesson Title]'
+
+#         Description: "You've received a new [4/5] star rating for your lesson from a student."
+
+#         Why it makes sense: This provides teachers with crucial feedback on their content and helps them track their reputation on the platform.
+
+#     Lesson Approved and Published
+
+#         When: (If you have an admin review process) An admin approves the teacher's submitted lesson.
+
+#         Title: Your Lesson is Live!
+
+#         Description: "Your lesson, '[Lesson Title]', has been approved and is now available in the marketplace."
+
+#         Why it makes sense: This is an important status update that closes the loop on the content creation process for the teacher.
+
+#     Weekly Performance Summary
+
+#         When: Sent automatically once a week.
+
+#         Title: Your Weekly Performance Summary
+
+#         Description: "This week you earned [$Amount], sold [X] lessons, and received [Y] new ratings. View your dashboard for more details."
+
+#         Why it makes sense: This acts as a mini-report that keeps teachers engaged and informed about their business performance without requiring them to constantly check their dashboard.

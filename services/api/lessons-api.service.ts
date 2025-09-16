@@ -18,4 +18,21 @@ export class LessonsApiService extends BaseApiService {
     async deleteLesson(id: string): Promise<void> {
         return this.delete<void>(`${API_ENDPOINTS.LESSONS}/${id}`);
     }
+
+    // --- ONLY THE NEW FUNCTIONS WILL USE THE NEW CONSTANTS ---
+    async getPendingLessons(): Promise<Lesson[]> {
+        // Use the new ADMIN constant
+        return this.get<Lesson[]>(API_ENDPOINTS.ADMIN.LESSONS_PENDING);
+    }
+
+    async approveLesson(lessonId: string): Promise<Lesson> {
+        // Use the new ADMIN constant
+        return this.patch<Lesson>(API_ENDPOINTS.ADMIN.LESSONS_APPROVE(lessonId), {});
+    }
+
+    // ... inside your LessonsApiService class
+
+    async rejectLesson(lessonId: string): Promise<Lesson> {
+        return this.patch<Lesson>(API_ENDPOINTS.ADMIN.LESSONS_REJECT(lessonId), {});
+    }
 }

@@ -11,9 +11,7 @@ import ChatScreen from '@/components/communication/ChatScreen';
 import { chatApiService, notificationApiService } from '@/services/api/api';
 
 export default function Header({ onCartClick }: { onCartClick?: () => void }) {
-    const { user, logout, cart, searchTerm, setSearchTerm, unreadMessageCount, setUnreadMessageCount } = useAppContext();
-
-    const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+    const { user, logout, cart, searchTerm, setSearchTerm, unreadMessageCount, setUnreadMessageCount, unreadNotificationCount, setUnreadNotificationCount } = useAppContext();
     const pathname = usePathname();
     const [isExploreDropdownOpen, setIsExploreDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -52,34 +50,66 @@ export default function Header({ onCartClick }: { onCartClick?: () => void }) {
     // Header.tsx
 
     // V V V V V REPLACE YOUR OLD useEffect WITH THIS ONE V V V V V
-    useEffect(() => {
-        // If there is no user, do nothing.
-        if (!user) return;
+    // useEffect(() => {
+    //     // If there is no user, do nothing.
+    //     if (!user) {}return;
 
-        // This function will run once to get the starting count.
+    //     // This function will run once to get the starting count.
+    //     const fetchData = async () => {
+    //         try {
+    //             // 1. Call the API to get the total number of unread messages.
+    //             const unreadData = await chatApiService.getTotalUnreadCount();
+
+    //             // 2. Update the GLOBAL state with the number from the API.
+    //             // This will make the red badge appear with the correct number.
+    //             setUnreadMessageCount(unreadData.count);
+
+    //             // Your code for fetching notifications can remain here if you have it.
+    //             const [notifications] = await Promise.all([
+    //                 notificationApiService.getNotifications(),
+    //             ]);
+    //             const unreadNotifications = notifications.filter(n => !n.isRead).length;
+    //             setUnreadNotificationCount(unreadNotifications);
+
+    //         } catch (error) {
+    //             console.error("Failed to fetch initial data for header:", error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, [user, setUnreadMessageCount]); // This tells React to re-run the effect if the user logs in/out.
+
+    // Header.tsx
+
+    // V V V V V REPLACE YOUR OLD useEffect WITH THIS ONE V V V V V
+    useEffect(() => {
+        // If there is no user, reset the counts and do nothing.
+        if (!user) {
+            setUnreadMessageCount(0);
+            setUnreadNotificationCount(0);
+            return;
+        }
+
         const fetchData = async () => {
             try {
-                // 1. Call the API to get the total number of unread messages.
-                const unreadData = await chatApiService.getTotalUnreadCount();
-
-                // 2. Update the GLOBAL state with the number from the API.
-                // This will make the red badge appear with the correct number.
-                setUnreadMessageCount(unreadData.count);
-
-                // Your code for fetching notifications can remain here if you have it.
-                const [notifications] = await Promise.all([
-                    notificationApiService.getNotifications(),
+                // Use Promise.all to fetch both counts at the same time for better performance.
+                const [messageData, notificationData] = await Promise.all([
+                    chatApiService.getTotalUnreadCount(),
+                    notificationApiService.getUnreadCount() // <-- You'll need to create this in your api service
                 ]);
-                const unreadNotifications = notifications.filter(n => !n.isRead).length;
-                setUnreadNotificationCount(unreadNotifications);
+
+                // Update both global states with the numbers from the API.
+                setUnreadMessageCount(messageData.count);
+                setUnreadNotificationCount(notificationData.count);
 
             } catch (error) {
-                console.error("Failed to fetch initial data for header:", error);
+                console.error("Failed to fetch initial counts for header:", error);
             }
         };
 
         fetchData();
-    }, [user, setUnreadMessageCount]); // This tells React to re-run the effect if the user logs in/out.
+        // The dependency array tells React to re-run this when the user logs in/out.
+    }, [user, setUnreadMessageCount, setUnreadNotificationCount]);
 
     const isActive = (path: string) => pathname.startsWith(path);
     const isTutorFinderPage = pathname.startsWith('/find-online-tutor');
@@ -235,12 +265,19 @@ export default function Header({ onCartClick }: { onCartClick?: () => void }) {
                                     className="relative text-slate-300 hover:text-white transition-colors">
                                     <Bell className="h-6 w-6 cursor-pointer " />
                                     {/* You can add a badge for new notifications */}
-                                    {unreadNotificationCount > 0 && (
+                                    {/* {unreadNotificationCount > 0 && (
                                         <span className="absolute -top-1 -right-1 flex h-3 w-3">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                                             <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
                                         </span>
+                                    )} */}
+                                    {/* V V V V V THIS IS THE CORRECTED BADGE CODE V V V V V */}
+                                    {unreadNotificationCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                                            {unreadNotificationCount > 9 ? '9+' : unreadNotificationCount}
+                                        </span>
                                     )}
+                                    {/* ^ ^ ^ ^ ^ END OF THE CORRECTED BADGE CODE ^ ^ ^ ^ ^ */}
                                 </button>
 
                                 {/* Cart icon (students only) - UNCHANGED */}

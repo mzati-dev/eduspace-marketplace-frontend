@@ -67,10 +67,11 @@ export interface UserProfile {
     name: string;           // User's full name
     email: string;          // User's email address
     phone: string;
-    role: 'teacher' | 'student';  // User's role in the system
+    role: 'teacher' | 'student' | 'admin' | 'chief_admin';  // User's role in the system
     profileImageUrl?: string;
     dob?: string;
     gender?: string;
+    createdAt: string;
 }
 
 /**
@@ -109,6 +110,7 @@ export interface Lesson {
     textContent?: string;   // Optional text content
     teacherId: string;      // ID of the teacher who created this
     teacherName: string;    // Name of the teacher
+    teacher?: UserProfile;
     createdAt: string;      // When the lesson was created (ISO string)
     durationMinutes: number; // Estimated duration in minutes
 
@@ -145,6 +147,8 @@ export interface AppContextType {
     setUser: (user: UserProfile) => void;
     unreadMessageCount: number;
     setUnreadMessageCount: React.Dispatch<React.SetStateAction<number>>;
+    unreadNotificationCount: number;
+    setUnreadNotificationCount: React.Dispatch<React.SetStateAction<number>>;
     // Authentication methods
     login: (user: UserProfile) => void; // Login handler
     logout: () => void;                 // Logout handler

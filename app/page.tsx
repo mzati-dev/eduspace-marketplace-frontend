@@ -31,24 +31,58 @@ export default function App() {
     const authService = new AuthApiService();
     const router = useRouter();
 
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token');
+    //     if (token && !user) {
+    //         authService.getProfile()
+    //             .then(profile => {
+    //                 login(profile);
+    //                 router.replace('/dashboard');
+    //             })
+    //             .catch(() => {
+    //                 localStorage.removeItem('token');
+    //                 setLoading(false);
+    //             });
+    //     } else if (user) {
+    //         router.replace('/dashboard');
+    //     } else {
+    //         setLoading(false);
+    //     }
+    // }, [user]);
+
+    // The new, corrected useEffect
     useEffect(() => {
+        const handleRedirect = (profile: UserProfile) => {
+            // V V V V V THIS IS THE NEW LOGIC V V V V V
+            // If the user's role is 'admin', send them to the admin page.
+            if (profile.role === 'admin') {
+                router.replace('/admin/reviews');
+            } else {
+                // Otherwise, send them to the regular student/teacher dashboard.
+                router.replace('/dashboard');
+            }
+            // ^ ^ ^ ^ ^ END OF THE NEW LOGIC ^ ^ ^ ^ ^
+        };
+
         const token = localStorage.getItem('token');
         if (token && !user) {
+            // This handles returning users
             authService.getProfile()
                 .then(profile => {
                     login(profile);
-                    router.replace('/dashboard');
+                    handleRedirect(profile); // Use the new redirect function
                 })
                 .catch(() => {
                     localStorage.removeItem('token');
                     setLoading(false);
                 });
         } else if (user) {
-            router.replace('/dashboard');
+            // This handles users who just logged in
+            handleRedirect(user); // Use the new redirect function
         } else {
             setLoading(false);
         }
-    }, [user]);
+    }, [user]); // The dependency array is correct
 
 
     // Utility function to handle errors

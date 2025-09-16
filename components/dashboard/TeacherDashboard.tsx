@@ -257,6 +257,8 @@ export default function TeacherDashboard() {
                                                     {salesCount} sales
                                                 </span>
 
+
+
                                                 {/* Rating badge: dark pill background with yellow star + number */}
                                                 {lesson.averageRating != null && (
                                                     <div className="bg-slate-700 px-2 py-1 rounded-full flex items-center gap-1">
@@ -266,6 +268,10 @@ export default function TeacherDashboard() {
                                                         </span>
                                                     </div>
                                                 )}
+
+                                                {/* <p className="text-gray-400 text-xs mt-2">
+                                                    Created: {new Date(lesson.createdAt).toLocaleDateString()}
+                                                </p> */}
                                             </div>
 
 

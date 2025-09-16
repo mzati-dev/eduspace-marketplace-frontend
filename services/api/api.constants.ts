@@ -23,6 +23,17 @@ export const API_ENDPOINTS = {
         GET_ALL_TUTORS: '/profiles',
     },
     LESSONS: '/lessons',
+    // V V V V V CHANGE THIS TO AN OBJECT V V V V V
+    // --- V V V V V ADD THIS NEW SECTION FOR ADMINS V V V V V ---
+    ADMIN: {
+        LESSONS_PENDING: '/lessons/pending',
+        LESSONS_APPROVE: (lessonId: string) => `/lessons/${lessonId}/approve`,
+        LESSONS_REJECT: (lessonId: string) => `/lessons/${lessonId}/reject`, // <-- ADD THIS
+        USERS: '/admin/users',
+    },
+    // --- ^ ^ ^ ^ ^ END OF THE NEW SECTION ^ ^ ^ ^ ^ ---
+    // ^ ^ ^ ^ ^ END OF THE CHANGE ^ ^ ^ ^ ^
+
     PURCHASES: {
         BASE: '/purchases',
         CHECKOUT: '/purchases/checkout',
@@ -52,6 +63,7 @@ export const API_ENDPOINTS = {
         GET_ALL: '/notifications',
         MARK_AS_READ: (id: string) => `/notifications/${id}/read`,
         MARK_ALL_AS_READ: '/notifications/mark-all-as-read',
+        GET_UNREAD_COUNT: '/notifications/unread-count',
     },
 
     CHAT: {
