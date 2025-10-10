@@ -2,12 +2,11 @@
 
 import { useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
-// import Header from '../components/common/Header';
 import { BookCopy, BarChart, Users, ChevronRight, CheckSquare, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/common/Header';
 
-// Reusable component for feature cards, with role-specific colors
+
 const FeatureCard = ({ icon: Icon, title, description, color }: { icon: React.ElementType, title: string, description: string, color: string }) => (
     <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 h-full">
         <Icon className={`h-8 w-8 ${color} mb-3`} />

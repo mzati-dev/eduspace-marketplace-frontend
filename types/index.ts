@@ -72,6 +72,7 @@ export interface UserProfile {
     dob?: string;
     gender?: string;
     createdAt: string;
+    permissions: string[];
 }
 
 /**

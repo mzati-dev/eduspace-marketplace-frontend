@@ -1,4 +1,3 @@
-// pages/legal/index.tsx
 import Header from '@/components/common/Header';
 import Link from 'next/link';
 import { FileText, Shield } from 'lucide-react';

@@ -1,4 +1,4 @@
-// pages/legal/privacy.tsx
+
 import Header from '@/components/common/Header';
 
 export default function PrivacyPolicyPage() {

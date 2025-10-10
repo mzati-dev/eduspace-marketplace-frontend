@@ -4,7 +4,10 @@ import { API_ENDPOINTS } from './api.constants';
 import { BaseApiService } from './base-api.service';
 
 // DTO type to match the backend
-type CreateUserDto = Omit<UserProfile, 'id' | 'createdAt' | 'isVerified'>;
+// type CreateUserDto = Omit<UserProfile, 'id' | 'createdAt' | 'isVerified'>;
+type CreateUserDto = Omit<UserProfile, 'id' | 'createdAt' | 'isVerified'> & {
+    permissions?: string[]; // ✅ Correct placement inside the type
+};
 
 export class AdminApiService extends BaseApiService {
     async getAllUsers(): Promise<UserProfile[]> {

@@ -112,7 +112,7 @@ export default function StudentTutorFinder() {
         <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8">
             {isChatOpen && selectedTutor && (
                 // <ChatScreen tutor={selectedTutor} onClose={closeChat} />
-                // AFTER
+
                 <ChatScreen onClose={closeChat} />
             )}
             <div className="max-w-7xl mx-auto">

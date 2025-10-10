@@ -218,7 +218,7 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
 
                 <header className="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
                     <h1 className="text-xl font-bold">Messages</h1>
-                    <button onClick={onClose} className="text-slate-400 hover:text-white"><X size={24} /></button>
+
                 </header>
                 <div className="p-4 flex-shrink-0">
                     <div className="relative">
@@ -234,7 +234,14 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                         return (
                             // REPLACE THE CONTENT OF THIS DIV
                             <div key={conv.id} onClick={() => handleSelectConversation(conv)} className={`flex items-center p-4 cursor-pointer border-l-4 transition-colors ${activeConversation?.id === conv.id ? 'bg-slate-900 border-blue-500' : 'border-transparent hover:bg-slate-700/50'}`}>
-                                <img src={otherParticipant.profileImageUrl || `https://ui-avatars.com/api/?name=${otherParticipant.name.replace(' ', '+')}&background=2563eb&color=fff&rounded=true`} alt={otherParticipant.name} className="w-12 h-12 rounded-full object-cover" />
+                                {/* <img src={otherParticipant.profileImageUrl || `https://ui-avatars.com/api/?name=${otherParticipant.name.replace(' ', '+')}&background=2563eb&color=fff&rounded=true`} alt={otherParticipant.name} className="w-12 h-12 rounded-full object-cover" /> */}
+                                <img
+                                    src={otherParticipant.profileImageUrl
+                                        ? `${API_BASE_URL}${otherParticipant.profileImageUrl}`
+                                        : `https://ui-avatars.com/api/?name=${otherParticipant.name.replace(' ', '+')}&background=2563eb&color=fff&rounded=true`}
+                                    alt={otherParticipant.name}
+                                    className="w-12 h-12 rounded-full object-cover"
+                                />
 
                                 {/* V V V V V THIS IS THE UPDATED PART V V V V V */}
                                 <div className="ml-4 flex-grow overflow-hidden">
@@ -282,14 +289,28 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                         <header className="bg-slate-800 p-4 border-b border-slate-700 flex items-center justify-between flex-shrink-0">
                             <div className="flex items-center">
                                 <button className="md:hidden mr-4 text-slate-300" onClick={() => setActiveConversation(null)}><ArrowLeft size={20} /></button>
-                                <img src={otherUser.profileImageUrl || `https://ui-avatars.com/api/?name=${otherUser.name.replace(' ', '+')}`} alt={otherUser.name} className="w-10 h-10 rounded-full mr-3 object-cover" />
+                                {/* <img src={otherUser.profileImageUrl || `https://ui-avatars.com/api/?name=${otherUser.name.replace(' ', '+')}`} alt={otherUser.name} className="w-10 h-10 rounded-full mr-3 object-cover" /> */}
+                                <img
+                                    src={otherUser.profileImageUrl
+                                        ? `${API_BASE_URL}${otherUser.profileImageUrl}`
+                                        : `https://ui-avatars.com/api/?name=${otherUser.name.replace(' ', '+')}`}
+                                    alt={otherUser.name}
+                                    className="w-10 h-10 rounded-full mr-3 object-cover"
+                                />
                                 <div><h2 className="font-semibold text-lg">{otherUser.name}</h2></div>
                             </div>
-                            <div className="flex items-center space-x-4"><button className="text-slate-400 hover:text-white"><Phone size={20} /></button><button className="text-slate-400 hover:text-white"><Video size={20} /></button><button className="text-slate-400 hover:text-white"><MoreVertical size={20} /></button></div>
+                            <div className="relative group inline-block">
+                                <button onClick={onClose} className="text-slate-400 hover:text-red-700 cursor-pointer"><X size={24} /></button>
+                                <span className="absolute top-[115%] right-0 whitespace-nowrap rounded bg-gray-800 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-50">
+                                    Close chat
+                                </span>
+
+                                {/* <div className="flex items-center space-x-4"><button className="text-slate-400 hover:text-white"><Phone size={20} /></button><button className="text-slate-400 hover:text-white"><Video size={20} /></button><button className="text-slate-400 hover:text-white"><MoreVertical size={20} /></button></div> */}
+                            </div>
                         </header>
                         <div className="flex-grow p-6 overflow-y-auto bg-slate-900">
                             <div className="space-y-6">
-                                {activeConvMessages.map(msg => (
+                                {/* {activeConvMessages.map(msg => (
                                     <div key={msg.id} className={`flex items-end gap-3 ${msg.author.id === user?.id ? 'justify-end' : 'justify-start'}`}>
                                         {msg.author.id !== user?.id && <img src={msg.author.profileImageUrl || `https://ui-avatars.com/api/?name=${msg.author.name.replace(' ', '+')}`} alt={msg.author.name} className="w-8 h-8 rounded-full self-start" />}
                                         <div className={`max-w-xs lg:max-w-md rounded-2xl px-4 py-2.5 ${msg.author.id === user?.id ? 'bg-blue-600 rounded-br-none' : 'bg-slate-700 rounded-bl-none'}`}>
@@ -297,7 +318,28 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                                             <p className="text-xs text-slate-400/80 text-right mt-1">{formatTimestamp(msg.timestamp)}</p>
                                         </div>
                                     </div>
-                                ))}
+                                ))} */}
+                                {activeConvMessages.map(msg => {
+                                    const authorProfile = activeConversation.participants.find(p => p.id === msg.author.id);
+
+                                    return (
+                                        <div key={msg.id} className={`flex items-end gap-3 ${msg.author.id === user?.id ? 'justify-end' : 'justify-start'}`}>
+                                            {/* {msg.author.id !== user?.id && (
+                                                // <img
+                                                //     src={authorProfile?.profileImageUrl
+                                                //         ? `${API_BASE_URL}${authorProfile.profileImageUrl}`
+                                                //         : `https://ui-avatars.com/api/?name=${authorProfile?.name.replace(' ', '+') || 'A'}`}
+                                                //     alt={authorProfile?.name || 'User Avatar'}
+                                                //     className="w-8 h-8 rounded-full self-start object-cover"
+                                                // />
+                                            )} */}
+                                            <div className={`max-w-xs lg:max-w-md rounded-2xl px-4 py-2.5 ${msg.author.id === user?.id ? 'bg-blue-600 rounded-br-none' : 'bg-slate-700 rounded-bl-none'}`}>
+                                                <p className="text-sm">{msg.content}</p>
+                                                <p className="text-xs text-slate-400/80 text-right mt-1">{formatTimestamp(msg.timestamp)}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                                 <div ref={messagesEndRef} />
                             </div>
                         </div>

@@ -6,7 +6,6 @@ import React from 'react';
 import { useAppContext } from '@/context/AppContext';
 import { TutorProfile, ProfileFormData } from '../data/tutors';
 import { API_BASE_URL } from '@/services/api/api.constants';
-// import { ProfileFormData, TutorProfile } from '@/types';
 import { profileApiService } from '@/services/api/api';
 import { ApiError } from '@/services/api/base-api.service';
 
@@ -236,35 +235,6 @@ export default function TeacherTutorDashboard() {
     const getProfileStorageKey = (userId: string | number) => `tutorProfileData_${userId}`;
 
 
-    // useEffect(() => {
-    //     if (user) {
-    //         const storageKey = getProfileStorageKey(user.id);
-    //         const savedProfileJson = localStorage.getItem(storageKey);
-
-    //         if (savedProfileJson) {
-    //             try {
-    //                 const savedProfile = JSON.parse(savedProfileJson);
-
-    //                 // This synchronizes the avatar with the main user profile image.
-    //                 // If you upload a new image on the Account page, it will be reflected here.
-    //                 if (user.profileImageUrl && savedProfile.avatar !== user.profileImageUrl) {
-    //                     savedProfile.avatar = user.profileImageUrl;
-    //                     localStorage.setItem(storageKey, JSON.stringify(savedProfile)); // Keep localStorage in sync
-    //                 }
-
-    //                 setTutorProfile(savedProfile);
-    //                 setIsEditing(false);
-    //             } catch (error) {
-    //                 console.error("Failed to parse saved profile:", error);
-    //                 setIsEditing(true); // Go to edit mode if parsing fails
-    //             }
-    //         } else {
-    //             // If no profile exists in storage, go to edit mode
-    //             setIsEditing(true);
-    //         }
-    //     }
-    // }, [user]); // The effect re-runs whenever the main 'user' object changes
-
     useEffect(() => {
         if (user) {
             const fetchProfile = async () => {
@@ -273,16 +243,12 @@ export default function TeacherTutorDashboard() {
                     setTutorProfile(profileData);
                     setIsEditing(false);
                 } catch (err) {
-                    // --- THIS IS THE CORRECTED LOGIC ---
                     if (err instanceof ApiError && err.status === 404) {
-                        // It's a new tutor, show the creation form.
                         setIsEditing(true);
                     } else {
-                        // It's a different, unexpected error.
                         setError("Could not load your profile.");
-                        console.error(err); // Log the actual error for debugging
+                        console.error(err);
                     }
-                    // --- END OF CORRECTION ---
                 } finally {
                     setIsLoading(false);
                 }

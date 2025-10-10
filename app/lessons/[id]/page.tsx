@@ -1,18 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Lesson } from '@/types'; // You should have this type defined
-import { lessonsApiService } from '@/services/api/api'; // Import the instance from the file above
-import { API_BASE_URL } from '@/services/api/api.constants'; // Your API base URL
+import { Lesson } from '@/types';
+import { lessonsApiService } from '@/services/api/api';
+import { API_BASE_URL } from '@/services/api/api.constants';
 
 export default function LessonPlayerPage({ params }: { params: { id: string } }) {
-    // State to hold lesson data, loading status, and errors
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // Fetch the lesson data when the component mounts or the ID changes
         if (!params.id) return;
 
         const fetchLesson = async () => {
@@ -30,25 +28,20 @@ export default function LessonPlayerPage({ params }: { params: { id: string } })
         fetchLesson();
     }, [params.id]);
 
-    // **SOLUTION 1: Build the complete URL for the video file.**
     const fullVideoUrl = lesson?.videoUrl ? `${API_BASE_URL}${lesson.videoUrl}` : null;
 
-    // Show a loading message while fetching data
     if (isLoading) {
         return <div className="text-center p-10">Loading lesson...</div>;
     }
 
-    // Show an error message if the fetch failed
     if (error) {
         return <div className="text-center p-10 text-red-500">{error}</div>;
     }
 
-    // Handle case where lesson is not found
     if (!lesson) {
         return <div className="text-center p-10">Lesson not found.</div>;
     }
 
-    // Render the page with the lesson details and video player
     return (
         <main className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
@@ -59,7 +52,6 @@ export default function LessonPlayerPage({ params }: { params: { id: string } })
 
                 {/* Video Player Section */}
                 <div className="aspect-video w-full bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
-                    {/* **SOLUTION 2: Only show the video tag if the URL exists.** */}
                     {fullVideoUrl ? (
                         <video
                             controls
