@@ -427,7 +427,7 @@ export default function App() {
             <span className="font-bold text-blue-300">Your knowledge marketplace</span>
             <p className="max-w-xl text-center text-lg mb-10 leading-relaxed drop-shadow-md text-slate-300">
 
-                This is the marketplace where students unlock knowledge and educators turn expertise into impact, from secondary school to university and beyond.
+                This is the marketplace where students unlock knowledge and educators turn expertise into impact, for all levels and lifelong learning.
             </p>
 
             <div className="flex space-x-6">
