@@ -6,8 +6,8 @@ import { Providers } from './providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Annex',
-  description: 'The knowledge marketplace. Annex is the marketplace where students unlock knowledge and educators turn expertise into impact, from secondary school to university and beyond.',
+  title: 'Eduspace Marketplace',
+  description: 'The knowledge marketplace. It is the marketplace where students unlock knowledge and educators turn expertise into impact, from secondary school to university and beyond.',
   icons: {
     icon: '/favicon.png',
   },

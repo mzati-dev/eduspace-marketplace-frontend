@@ -422,12 +422,12 @@ export default function App() {
     return (
         <main className="min-h-screen bg-slate-900 flex flex-col items-center justify-center px-6 text-white">
             <h1 className="text-5xl font-extrabold mb-6 text-center drop-shadow-lg">
-                Welcome to <span className="text-blue-400">Annex</span>
+                Welcome to <span className="text-blue-400">Eduspace Marketplace</span>
             </h1>
             <span className="font-bold text-blue-300">Your knowledge marketplace</span>
             <p className="max-w-xl text-center text-lg mb-10 leading-relaxed drop-shadow-md text-slate-300">
 
-                Annex is the marketplace where students unlock knowledge and educators turn expertise into impact, from secondary school to university and beyond.
+                This is the marketplace where students unlock knowledge and educators turn expertise into impact, from secondary school to university and beyond.
             </p>
 
             <div className="flex space-x-6">
@@ -464,7 +464,7 @@ export default function App() {
 
                         <div className="text-center mb-4">
                             <BookOpen className="h-10 w-10 text-blue-400 mx-auto mb-2" />
-                            <h1 className="text-2xl font-bold">Annex</h1>
+                            <h1 className="text-2xl font-bold">Eduspace Marketplace</h1>
                             <p className="text-slate-300 text-sm">Your knowledge marketplace</p>
                         </div>
                         <div className="flex-1 overflow-y-auto">
@@ -475,7 +475,7 @@ export default function App() {
             )}
 
             <footer className="mt-20 text-sm text-slate-400 opacity-80">
-                © {new Date().getFullYear()} Annex. All rights reserved.
+                © {new Date().getFullYear()} Eduspace Marketplace. All rights reserved.
             </footer>
         </main>
     );

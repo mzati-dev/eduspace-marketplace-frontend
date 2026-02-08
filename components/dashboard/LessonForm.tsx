@@ -1,116 +1,70 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, Upload } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Button from '../common/Button';
 import FormRow from '../common/FormRow';
 import { Lesson } from '@/types';
 
-// === CHANGE: Define new type extending Lesson omitting some fields + adding videoFile ===
-type LessonFormData = Omit<Lesson, 'id' | 'teacherId' | 'teacherName' | 'createdAt'> & {
-  videoFile: File | null;
-};
+// We define a simpler type for Editing (No file objects needed)
+type EditLessonData = Omit<Lesson, 'id' | 'teacherId' | 'teacherName' | 'createdAt' | 'videoUrl' | 'salesCount' | 'averageRating'>;
 
 export default function LessonForm({
     onSubmit,
     onCancel,
     initialData
 }: {
-    // === CHANGE: onSubmit now expects LessonFormData which includes videoFile ===
-    onSubmit: (formData: FormData) => void | Promise<void>;
+    // Expect a plain object (JSON), not FormData
+    onSubmit: (data: Partial<EditLessonData>) => void | Promise<void>;
     onCancel: () => void;
     initialData?: Lesson | null;
 }) {
+    // Initialize state with existing data
     const [formData, setFormData] = useState({
         title: initialData?.title || '',
         description: initialData?.description || '',
         subject: initialData?.subject || 'Biology',
         form: initialData?.form || 'Form 1',
         price: initialData?.price ? String(initialData.price) : '1000',
-        videoFile: null as File | null,  // This is the File object for upload
-        videoUrl: initialData?.videoUrl || '',
         textContent: initialData?.textContent || '',
         durationMinutes: initialData?.durationMinutes || 30,
     });
-    const [fileName, setFileName] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setFormData(prev => ({ ...prev, videoFile: file }));
-        setFileName(file?.name || null);
-    };
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    // const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     setIsLoading(true);
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
 
-    //     // === CHANGE: Prepare plain object matching LessonFormData type ===
-    //     const submitData: LessonFormData = {
-    //         title: formData.title,
-    //         description: formData.description,
-    //         subject: formData.subject,
-    //         form: formData.form,
-    //         price: Number(formData.price),
-    //         textContent: formData.textContent,
-    //         durationMinutes: formData.durationMinutes,
-    //         videoFile: formData.videoFile,  // include file object here
-    //         videoUrl: formData.videoUrl,
-    //     };
+        // Prepare a clean JSON object
+        const payload = {
+            title: formData.title,
+            description: formData.description,
+            subject: formData.subject,
+            form: formData.form,
+            price: Number(formData.price),
+            textContent: formData.textContent,
+            durationMinutes: Number(formData.durationMinutes),
+        };
 
-    //     try {
-    //         // Call parent onSubmit passing the form data including videoFile
-    //         await onSubmit(submitData);
-    //     } catch (error) {
-    //         // Optional error handling here
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
-
-    // In components/teacher/LessonForm.tsx
-
-const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    // === CHANGE: Use FormData for file uploads ===
-    const formDataPayload = new FormData();
-
-    // Append all the text-based form fields
-    formDataPayload.append('title', formData.title);
-    formDataPayload.append('description', formData.description);
-    formDataPayload.append('subject', formData.subject);
-    formDataPayload.append('form', formData.form);
-    formDataPayload.append('price', String(formData.price));
-    formDataPayload.append('textContent', formData.textContent);
-    formDataPayload.append('durationMinutes', String(formData.durationMinutes));
-    
-    // IMPORTANT: Only append the file if one was selected
-    if (formData.videoFile) {
-        formDataPayload.append('videoFile', formData.videoFile);
-    }
-
-    try {
-        // === CHANGE: Pass the FormData object to the onSubmit handler ===
-        // Your parent component will now receive and send this FormData object.
-        await onSubmit(formDataPayload); 
-    } catch (error) {
-        console.error("Failed to submit the lesson:", error);
-    } finally {
-        setIsLoading(false);
-    }
-};
+        try {
+            await onSubmit(payload);
+        } catch (error) {
+            console.error("Failed to update lesson:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const inputClass = "w-full bg-slate-700 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none";
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto pt-10 pb-20">
             <Button onClick={onCancel} variant="ghost" className="mb-6">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Dashboard
@@ -118,10 +72,10 @@ const handleSubmit = async (e: React.FormEvent) => {
 
             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-8">
                 <h2 className="text-2xl font-bold text-white mb-6">
-                    {initialData ? 'Edit Lesson' : 'Create New Lesson'}
+                    Edit Lesson Details
                 </h2>
 
-                <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <FormRow label="Lesson Title">
                         <input
                             name="title"
@@ -204,25 +158,9 @@ const handleSubmit = async (e: React.FormEvent) => {
                         </FormRow>
                     </div>
 
-                    <FormRow label="Lesson Video">
-                        <label htmlFor="video-upload" className={`${inputClass} flex items-center cursor-pointer`}>
-                            <Upload className="h-5 w-5 mr-3 text-slate-400" />
-                            <span className="text-slate-300">{fileName || 'Upload a video file'}</span>
-                        </label>
-                        <input 
-                            id="video-upload" 
-                            name="videoFile" 
-                            type="file" 
-                            accept="video/*" 
-                            onChange={handleFileChange} 
-                            className="hidden" 
-                            disabled={isLoading}
-                        />
-                        {initialData?.videoUrl && !fileName && (
-                            <p className="text-sm text-slate-400 mt-2">Current video: {initialData.videoUrl}</p>
-                        )}
-                    </FormRow>
-
+                    {/* Notice: We removed the Video File Input. 
+                        We don't want to re-upload heavy videos here. */}
+                    
                     <FormRow label="Lesson Text Content">
                         <textarea
                             name="textContent"
@@ -248,7 +186,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                             type="submit"
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Processing...' : initialData ? 'Save Changes' : 'Create Lesson'}
+                            {isLoading ? 'Saving...' : 'Save Changes'}
                         </Button>
                     </div>
                 </form>
@@ -256,6 +194,265 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
     );
 }
+
+// 'use client';
+
+// import { useState } from 'react';
+// import { ArrowLeft, Upload } from 'lucide-react';
+// import Button from '../common/Button';
+// import FormRow from '../common/FormRow';
+// import { Lesson } from '@/types';
+
+// // === CHANGE: Define new type extending Lesson omitting some fields + adding videoFile ===
+// type LessonFormData = Omit<Lesson, 'id' | 'teacherId' | 'teacherName' | 'createdAt'> & {
+//   videoFile: File | null;
+// };
+
+// export default function LessonForm({
+//     onSubmit,
+//     onCancel,
+//     initialData
+// }: {
+//     // === CHANGE: onSubmit now expects LessonFormData which includes videoFile ===
+//     onSubmit: (formData: FormData) => void | Promise<void>;
+//     onCancel: () => void;
+//     initialData?: Lesson | null;
+// }) {
+//     const [formData, setFormData] = useState({
+//         title: initialData?.title || '',
+//         description: initialData?.description || '',
+//         subject: initialData?.subject || 'Biology',
+//         form: initialData?.form || 'Form 1',
+//         price: initialData?.price ? String(initialData.price) : '1000',
+//         videoFile: null as File | null,  // This is the File object for upload
+//         videoUrl: initialData?.videoUrl || '',
+//         textContent: initialData?.textContent || '',
+//         durationMinutes: initialData?.durationMinutes || 30,
+//     });
+//     const [fileName, setFileName] = useState<string | null>(null);
+//     const [isLoading, setIsLoading] = useState(false);
+
+//     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//         const file = e.target.files?.[0] || null;
+//         setFormData(prev => ({ ...prev, videoFile: file }));
+//         setFileName(file?.name || null);
+//     };
+
+//     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+//         const { name, value } = e.target;
+//         setFormData(prev => ({ ...prev, [name]: value }));
+//     };
+
+//     // const handleSubmit = async (e: React.FormEvent) => {
+//     //     e.preventDefault();
+//     //     setIsLoading(true);
+
+//     //     // === CHANGE: Prepare plain object matching LessonFormData type ===
+//     //     const submitData: LessonFormData = {
+//     //         title: formData.title,
+//     //         description: formData.description,
+//     //         subject: formData.subject,
+//     //         form: formData.form,
+//     //         price: Number(formData.price),
+//     //         textContent: formData.textContent,
+//     //         durationMinutes: formData.durationMinutes,
+//     //         videoFile: formData.videoFile,  // include file object here
+//     //         videoUrl: formData.videoUrl,
+//     //     };
+
+//     //     try {
+//     //         // Call parent onSubmit passing the form data including videoFile
+//     //         await onSubmit(submitData);
+//     //     } catch (error) {
+//     //         // Optional error handling here
+//     //     } finally {
+//     //         setIsLoading(false);
+//     //     }
+//     // };
+
+//     // In components/teacher/LessonForm.tsx
+
+// const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setIsLoading(true);
+
+//     // === CHANGE: Use FormData for file uploads ===
+//     const formDataPayload = new FormData();
+
+//     // Append all the text-based form fields
+//     formDataPayload.append('title', formData.title);
+//     formDataPayload.append('description', formData.description);
+//     formDataPayload.append('subject', formData.subject);
+//     formDataPayload.append('form', formData.form);
+//     formDataPayload.append('price', String(formData.price));
+//     formDataPayload.append('textContent', formData.textContent);
+//     formDataPayload.append('durationMinutes', String(formData.durationMinutes));
+    
+//     // IMPORTANT: Only append the file if one was selected
+//     if (formData.videoFile) {
+//         formDataPayload.append('videoFile', formData.videoFile);
+//     }
+
+//     try {
+//         // === CHANGE: Pass the FormData object to the onSubmit handler ===
+//         // Your parent component will now receive and send this FormData object.
+//         await onSubmit(formDataPayload); 
+//     } catch (error) {
+//         console.error("Failed to submit the lesson:", error);
+//     } finally {
+//         setIsLoading(false);
+//     }
+// };
+
+//     const inputClass = "w-full bg-slate-700 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none";
+
+//     return (
+//         <div className="max-w-4xl mx-auto">
+//             <Button onClick={onCancel} variant="ghost" className="mb-6">
+//                 <ArrowLeft className="h-4 w-4 mr-2" />
+//                 Back to Dashboard
+//             </Button>
+
+//             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-8">
+//                 <h2 className="text-2xl font-bold text-white mb-6">
+//                     {initialData ? 'Edit Lesson' : 'Create New Lesson'}
+//                 </h2>
+
+//                 <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
+//                     <FormRow label="Lesson Title">
+//                         <input
+//                             name="title"
+//                             value={formData.title}
+//                             onChange={handleChange}
+//                             className={inputClass}
+//                             required
+//                             disabled={isLoading}
+//                         />
+//                     </FormRow>
+
+//                     <FormRow label="Description">
+//                         <textarea
+//                             name="description"
+//                             value={formData.description}
+//                             onChange={handleChange}
+//                             className={inputClass}
+//                             rows={4}
+//                             required
+//                             disabled={isLoading}
+//                         />
+//                     </FormRow>
+
+//                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                         <FormRow label="Subject">
+//                             <select
+//                                 name="subject"
+//                                 value={formData.subject}
+//                                 onChange={handleChange}
+//                                 className={inputClass}
+//                                 disabled={isLoading}
+//                             >
+//                                 {['Agriculture', 'Biology', 'English Language', 'Chemistry', 'Chichewa Language', 'Chichewa Literature', 'Mathematics', 'Physics', 'Geography', 'Social and Life Skills', 'Additional Mathematics', 'History', 'Bible Knowledge', 'Computer Studies'].map(s => (
+//                                     <option key={s} value={s}>{s}</option>
+//                                 ))}
+//                             </select>
+//                         </FormRow>
+
+//                         <FormRow label="Form Level">
+//                             <select
+//                                 name="form"
+//                                 value={formData.form}
+//                                 onChange={handleChange}
+//                                 className={inputClass}
+//                                 disabled={isLoading}
+//                             >
+//                                 {['Form 1', 'Form 2', 'Form 3', 'Form 4'].map(f => (
+//                                     <option key={f} value={f}>{f}</option>
+//                                 ))}
+//                             </select>
+//                         </FormRow>
+//                     </div>
+
+//                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                         <FormRow label="Price (MWK)">
+//                             <input
+//                                 name="price"
+//                                 type="number"
+//                                 value={formData.price}
+//                                 onChange={handleChange}
+//                                 className={inputClass}
+//                                 required
+//                                 disabled={isLoading}
+//                                 min="0"
+//                                 step="100"
+//                             />
+//                         </FormRow>
+
+//                         <FormRow label="Duration (min)">
+//                             <input
+//                                 name="durationMinutes"
+//                                 type="number"
+//                                 value={formData.durationMinutes}
+//                                 onChange={handleChange}
+//                                 className={inputClass}
+//                                 required
+//                                 disabled={isLoading}
+//                                 min="1"
+//                             />
+//                         </FormRow>
+//                     </div>
+
+//                     <FormRow label="Lesson Video">
+//                         <label htmlFor="video-upload" className={`${inputClass} flex items-center cursor-pointer`}>
+//                             <Upload className="h-5 w-5 mr-3 text-slate-400" />
+//                             <span className="text-slate-300">{fileName || 'Upload a video file'}</span>
+//                         </label>
+//                         <input 
+//                             id="video-upload" 
+//                             name="videoFile" 
+//                             type="file" 
+//                             accept="video/*" 
+//                             onChange={handleFileChange} 
+//                             className="hidden" 
+//                             disabled={isLoading}
+//                         />
+//                         {initialData?.videoUrl && !fileName && (
+//                             <p className="text-sm text-slate-400 mt-2">Current video: {initialData.videoUrl}</p>
+//                         )}
+//                     </FormRow>
+
+//                     <FormRow label="Lesson Text Content">
+//                         <textarea
+//                             name="textContent"
+//                             value={formData.textContent}
+//                             onChange={handleChange}
+//                             className={inputClass}
+//                             rows={10}
+//                             required
+//                             disabled={isLoading}
+//                         />
+//                     </FormRow>
+
+//                     <div className="flex justify-end gap-4 pt-4">
+//                         <Button
+//                             type="button"
+//                             variant="secondary"
+//                             onClick={onCancel}
+//                             disabled={isLoading}
+//                         >
+//                             Cancel
+//                         </Button>
+//                         <Button
+//                             type="submit"
+//                             disabled={isLoading}
+//                         >
+//                             {isLoading ? 'Processing...' : initialData ? 'Save Changes' : 'Create Lesson'}
+//                         </Button>
+//                     </div>
+//                 </form>
+//             </div>
+//         </div>
+//     );
+// }
 
 
 

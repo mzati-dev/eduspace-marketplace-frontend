@@ -2,12 +2,27 @@ import { Lesson } from '@/types';
 import { API_ENDPOINTS } from './api.constants';
 import { BaseApiService } from './base-api.service';
 
+// 1. Define the exact shape of data your Backend expects (Matches CreateLessonDto)
+export interface CreateLessonPayload {
+    title: string;
+    description?: string;
+    subject: string;
+    form: string;
+    price: number;
+    videoId: string;       // <--- CRITICAL: This is the ID from Bunny
+    durationMinutes: number;
+    textContent?: string;
+}
+
 export class LessonsApiService extends BaseApiService {
-    async createLesson(lessonData: FormData | Omit<Lesson, 'id' | 'teacherId' | 'teacherName' | 'createdAt'>): Promise<Lesson> {
+
+    // 2. UPDATED: No more FormData. We accept the payload object.
+    async createLesson(lessonData: CreateLessonPayload): Promise<Lesson> {
         return this.post<Lesson>(API_ENDPOINTS.LESSONS, lessonData);
     }
 
-    async updateLesson(id: string, lessonData: FormData | Partial<Lesson>): Promise<Lesson> {
+    // 3. UPDATED: No more FormData.
+    async updateLesson(id: string, lessonData: Partial<CreateLessonPayload>): Promise<Lesson> {
         return this.put<Lesson>(`${API_ENDPOINTS.LESSONS}/${id}`, lessonData);
     }
 
@@ -19,20 +34,55 @@ export class LessonsApiService extends BaseApiService {
         return this.delete<void>(`${API_ENDPOINTS.LESSONS}/${id}`);
     }
 
-    // --- ONLY THE NEW FUNCTIONS WILL USE THE NEW CONSTANTS ---
+    // --- ADMIN FUNCTIONS (These remain the same) ---
     async getPendingLessons(): Promise<Lesson[]> {
-        // Use the new ADMIN constant
         return this.get<Lesson[]>(API_ENDPOINTS.ADMIN.LESSONS_PENDING);
     }
 
     async approveLesson(lessonId: string): Promise<Lesson> {
-        // Use the new ADMIN constant
         return this.patch<Lesson>(API_ENDPOINTS.ADMIN.LESSONS_APPROVE(lessonId), {});
     }
-
-    // ... inside your LessonsApiService class
 
     async rejectLesson(lessonId: string): Promise<Lesson> {
         return this.patch<Lesson>(API_ENDPOINTS.ADMIN.LESSONS_REJECT(lessonId), {});
     }
 }
+
+// import { Lesson } from '@/types';
+// import { API_ENDPOINTS } from './api.constants';
+// import { BaseApiService } from './base-api.service';
+
+// export class LessonsApiService extends BaseApiService {
+//     async createLesson(lessonData: FormData | Omit<Lesson, 'id' | 'teacherId' | 'teacherName' | 'createdAt'>): Promise<Lesson> {
+//         return this.post<Lesson>(API_ENDPOINTS.LESSONS, lessonData);
+//     }
+
+//     async updateLesson(id: string, lessonData: FormData | Partial<Lesson>): Promise<Lesson> {
+//         return this.put<Lesson>(`${API_ENDPOINTS.LESSONS}/${id}`, lessonData);
+//     }
+
+//     async getLessonById(id: string): Promise<Lesson> {
+//         return this.get<Lesson>(`${API_ENDPOINTS.LESSONS}/${id}`);
+//     }
+
+//     async deleteLesson(id: string): Promise<void> {
+//         return this.delete<void>(`${API_ENDPOINTS.LESSONS}/${id}`);
+//     }
+
+//     // --- ONLY THE NEW FUNCTIONS WILL USE THE NEW CONSTANTS ---
+//     async getPendingLessons(): Promise<Lesson[]> {
+//         // Use the new ADMIN constant
+//         return this.get<Lesson[]>(API_ENDPOINTS.ADMIN.LESSONS_PENDING);
+//     }
+
+//     async approveLesson(lessonId: string): Promise<Lesson> {
+//         // Use the new ADMIN constant
+//         return this.patch<Lesson>(API_ENDPOINTS.ADMIN.LESSONS_APPROVE(lessonId), {});
+//     }
+
+//     // ... inside your LessonsApiService class
+
+//     async rejectLesson(lessonId: string): Promise<Lesson> {
+//         return this.patch<Lesson>(API_ENDPOINTS.ADMIN.LESSONS_REJECT(lessonId), {});
+//     }
+// }
