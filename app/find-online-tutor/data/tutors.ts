@@ -52,6 +52,8 @@ export const mockTutors: TutorProfile[] = [
             phone: '0991234567',
             role: 'teacher',
             profileImageUrl: '/avatars/john.jpg', // Example image path
+            createdAt: new Date().toISOString(), // Add this
+            permissions: ['read', 'write'] // Add this - adjust as needed
         }
     },
     {
@@ -73,6 +75,9 @@ export const mockTutors: TutorProfile[] = [
             phone: '0991234567',
             role: 'teacher',
             profileImageUrl: '/avatars/john.jpg', // Example image path
+            createdAt: new Date().toISOString(), // Add this
+
+            permissions: ['read', 'write'] // Add this - adjust as needed
         }
     },
     {
@@ -94,6 +99,8 @@ export const mockTutors: TutorProfile[] = [
             phone: '0991234567',
             role: 'teacher',
             profileImageUrl: '/avatars/john.jpg', // Example image path
+            createdAt: new Date().toISOString(), // Add this
+            permissions: ['read', 'write'] // Add this - adjust as needed
         }
     },
 
@@ -116,6 +123,8 @@ export const mockTutors: TutorProfile[] = [
             phone: '0991234567',
             role: 'teacher',
             profileImageUrl: '/avatars/john.jpg', // Example image path
+            createdAt: new Date().toISOString(), // Add this
+            permissions: ['read', 'write'] // Add this - adjust as needed
         }
     }
 
