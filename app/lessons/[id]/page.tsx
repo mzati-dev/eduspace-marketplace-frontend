@@ -1,29 +1,29 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { Lesson } from '@/types';
 import { lessonsApiService } from '@/services/api/api';
 import { API_BASE_URL } from '@/services/api/api.constants';
 
-/**
- * Next.js 15 requires params to be a Promise.
- * We unwrap it using React's 'use' hook for Client Components.
- */
 export default function LessonPlayerPage({ params }: { params: Promise<{ id: string }> }) {
-    // Unwrap the params promise
-    const resolvedParams = use(params);
-    const id = resolvedParams.id;
-
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
+    const [lessonId, setLessonId] = useState<string>('');
 
     useEffect(() => {
-        if (!id) return;
+        // Await the params promise to get the id
+        params.then(resolvedParams => {
+            setLessonId(resolvedParams.id);
+        });
+    }, [params]);
+
+    useEffect(() => {
+        if (!lessonId) return;
 
         const fetchLesson = async () => {
             try {
-                const fetchedLesson = await lessonsApiService.getLessonById(id);
+                const fetchedLesson = await lessonsApiService.getLessonById(lessonId);
                 setLesson(fetchedLesson);
             } catch (err) {
                 console.error("Failed to fetch lesson:", err);
@@ -34,12 +34,12 @@ export default function LessonPlayerPage({ params }: { params: Promise<{ id: str
         };
 
         fetchLesson();
-    }, [id]);
+    }, [lessonId]);
 
     const fullVideoUrl = lesson?.videoUrl ? `${API_BASE_URL}${lesson.videoUrl}` : null;
 
     if (isLoading) {
-        return <div className="text-center p-10 text-white">Loading lesson...</div>;
+        return <div className="text-center p-10">Loading lesson...</div>;
     }
 
     if (error) {
@@ -47,7 +47,7 @@ export default function LessonPlayerPage({ params }: { params: Promise<{ id: str
     }
 
     if (!lesson) {
-        return <div className="text-center p-10 text-white">Lesson not found.</div>;
+        return <div className="text-center p-10">Lesson not found.</div>;
     }
 
     return (
