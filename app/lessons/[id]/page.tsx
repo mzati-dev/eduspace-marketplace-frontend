@@ -5,13 +5,7 @@ import { Lesson } from '@/types';
 import { lessonsApiService } from '@/services/api/api';
 import { API_BASE_URL } from '@/services/api/api.constants';
 
-
-interface LessonPlayerPageProps {
-    params: { id: string };
-}
-
-
-export default function LessonPlayerPage({ params }: LessonPlayerPageProps) {
+export default function LessonPlayerPage({ params }: { params: { id: string } }) {
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
