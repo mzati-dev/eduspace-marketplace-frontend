@@ -134,6 +134,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     const login = (userData: UserProfile) => {
         setUser(userData);
+        // ✅ Logic to check for admin or chief_admin
+
         router.push('/dashboard');
         showToast(`Welcome, ${userData.name}!`);
     };

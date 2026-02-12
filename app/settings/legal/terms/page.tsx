@@ -12,7 +12,7 @@ export default function TermsPage() {
                     </h1>
                     <div className="space-y-6 text-slate-300">
                         <p className="text-sm text-slate-500">Last updated: September 7, 2025</p>
-                        <p>Welcome to Annex! These terms and conditions outline the rules and regulations for the use of our application. By accessing this app, we assume you accept these terms and conditions.</p>
+                        <p>Welcome to Eduspace Marketplace! These terms and conditions outline the rules and regulations for the use of our application. By accessing this app, we assume you accept these terms and conditions.</p>
 
                         <div>
                             <h2 className="text-2xl font-bold text-white mb-2">1. User Accounts</h2>

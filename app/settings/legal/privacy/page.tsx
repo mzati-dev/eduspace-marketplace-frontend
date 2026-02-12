@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
                     </h1>
                     <div className="space-y-6 text-slate-300">
                         <p className="text-sm text-slate-500">Last updated: September 7, 2025</p>
-                        <p>Your privacy is important to us. It is Annex's policy to respect your privacy regarding any information we may collect from you through our app.</p>
+                        <p>Your privacy is important to us. It is eduspace marketplace's policy to respect your privacy regarding any information we may collect from you through our app.</p>
 
                         <div>
                             <h2 className="text-2xl font-bold text-white mb-2">1. Information We Collect</h2>

@@ -9,7 +9,7 @@ export default function AboutPage() {
             <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-10">
-                        <h1 className="text-5xl font-extrabold mb-2">About Annex</h1>
+                        <h1 className="text-5xl font-extrabold mb-2">About Eduspace Marketplace</h1>
                         <p className="text-xl text-slate-400">Your Knowledge Marketplace</p>
                     </div>
 
@@ -25,7 +25,7 @@ export default function AboutPage() {
                         <div>
                             <h2 className="text-3xl font-bold text-white mb-3">What is Annex?</h2>
                             <p className="mb-6">
-                                Annex is a knowledge marketplace designed for both students and educators. It's a platform where learning materials are shared, knowledge is exchanged, and educational goals are achieved.
+                                Eduspace Marketplace is a knowledge marketplace designed for both students and educators. It's a platform where learning materials are shared, knowledge is exchanged, and educational goals are achieved.
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* For Students Card */}
@@ -67,7 +67,7 @@ export default function AboutPage() {
                                 </li>
                                 <li className="flex justify-between p-4">
                                     <span className="font-semibold">Contact</span>
-                                    <a href="mailto:support@annexapp.com" className="text-blue-400 hover:underline">support@annexapp.com</a>
+                                    <a href="mailto:support@annexapp.com" className="text-blue-400 hover:underline">support@eduspace-marketplace.com</a>
                                 </li>
                             </ul>
                         </div>
