@@ -7,6 +7,7 @@ import { useAppContext } from '../../context/AppContext';
 import { FileText, Book, Youtube, PenSquare, FilePlus2, Download, UploadCloud } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/common/Header';
+import SideMenu from '@/components/common/SideMenu';
 
 // --- MOCK DATA ---
 const mockData = {
@@ -66,6 +67,8 @@ const TeacherToolCard = ({ icon: Icon, title, description, href, ctaText = "Crea
 export default function ResourcesPage() {
     const { user } = useAppContext();
     const [activeTab, setActiveTab] = useState<ResourceCategory>('all');
+    const [isSideMenuOpen, setSideMenuOpen] = useState(false); // ADD THIS
+    const [isCollapsed, setIsCollapsed] = useState(false); // ===== ADD THIS =====
 
     // Security Guard
     useEffect(() => {
@@ -111,64 +114,77 @@ export default function ResourcesPage() {
 
     return (
         <>
-            <Header />
-            <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8">
-                <div className="max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold mb-2">Online Libra</h1>
-                    <p className="text-slate-400 mb-10">Your central library for all educational materials and teaching tools.</p>
+            {/* ADD SIDEMENU */}
+            <SideMenu
+                userRole={user.role}
+                isOpen={isSideMenuOpen}
+                onClose={() => setSideMenuOpen(false)}
+                onMenuClick={() => setSideMenuOpen(true)}  // ===== ADD THIS =====
+                onCollapse={setIsCollapsed}                // ===== ADD THIS =====
+            />
+            <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+                <Header
+                    onMenuClick={() => setSideMenuOpen(true)} // ADD THIS
+                />
 
-                    {/* Teacher-Only Tools Section */}
-                    {user.role === 'teacher' && (
-                        <div className="mb-12">
-                            <h2 className="text-2xl font-bold mb-4 border-l-4 border-green-500 pl-3">Teacher Toolkit</h2>
-                            {/* CHANGE 6: Changed grid to 3 columns to accommodate the new tool */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <TeacherToolCard
-                                    icon={PenSquare}
-                                    title="Lesson Plan Creator"
-                                    description="Use our template to build and manage your lesson plans."
-                                    href="/resources/create-lesson-plan"
-                                />
-                                <TeacherToolCard
-                                    icon={FilePlus2}
-                                    title="Scheme of Work Generator"
-                                    description="Design your termly schemes of work with our intuitive tool."
-                                    href="/resources/create-scheme-of-work"
-                                />
-                                {/* CHANGE 7: Added the new "Upload Resource" tool for teachers */}
-                                <TeacherToolCard
-                                    icon={UploadCloud}
-                                    title="Upload Resource"
-                                    description="Share your own books, papers, or tutorials with the community."
-                                    href="/resources/upload"
-                                    ctaText="Upload Now"
-                                    className="bg-purple-600 hover:bg-purple-700"
-                                />
+                <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8">
+                    <div className="max-w-7xl mx-auto">
+                        <h1 className="text-4xl font-bold mb-2">Online Libra</h1>
+                        <p className="text-slate-400 mb-10">Your central library for all educational materials and teaching tools.</p>
+
+                        {/* Teacher-Only Tools Section */}
+                        {user.role === 'teacher' && (
+                            <div className="mb-12">
+                                <h2 className="text-2xl font-bold mb-4 border-l-4 border-green-500 pl-3">Teacher Toolkit</h2>
+                                {/* CHANGE 6: Changed grid to 3 columns to accommodate the new tool */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <TeacherToolCard
+                                        icon={PenSquare}
+                                        title="Lesson Plan Creator"
+                                        description="Use our template to build and manage your lesson plans."
+                                        href="/resources/create-lesson-plan"
+                                    />
+                                    <TeacherToolCard
+                                        icon={FilePlus2}
+                                        title="Scheme of Work Generator"
+                                        description="Design your termly schemes of work with our intuitive tool."
+                                        href="/resources/create-scheme-of-work"
+                                    />
+                                    {/* CHANGE 7: Added the new "Upload Resource" tool for teachers */}
+                                    <TeacherToolCard
+                                        icon={UploadCloud}
+                                        title="Upload Resource"
+                                        description="Share your own books, papers, or tutorials with the community."
+                                        href="/resources/upload"
+                                        ctaText="Upload Now"
+                                        className="bg-purple-600 hover:bg-purple-700"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Shared Resources Section */}
+                        <div>
+                            <h2 className="text-2xl font-bold mb-4 border-l-4 border-blue-500 pl-3">Shared Library</h2>
+
+                            {/* Tab Navigation */}
+                            <div className="flex flex-wrap gap-2 border-b border-slate-700 mb-6 pb-2">
+                                <TabButton tab="all" label="All Resources" />
+                                <TabButton tab="books" label="Books" />
+                                <TabButton tab="pastPapers" label="Past Papers" />
+                                <TabButton tab="tutorials" label="Tutorials" />
+                                {/* CHANGE 8: Added the new Syllabi tab button */}
+                                <TabButton tab="syllabi" label="Syllabi" />
+                            </div>
+
+                            {/* Resource Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {resourcesToShow()}
                             </div>
                         </div>
-                    )}
-
-                    {/* Shared Resources Section */}
-                    <div>
-                        <h2 className="text-2xl font-bold mb-4 border-l-4 border-blue-500 pl-3">Shared Library</h2>
-
-                        {/* Tab Navigation */}
-                        <div className="flex flex-wrap gap-2 border-b border-slate-700 mb-6 pb-2">
-                            <TabButton tab="all" label="All Resources" />
-                            <TabButton tab="books" label="Books" />
-                            <TabButton tab="pastPapers" label="Past Papers" />
-                            <TabButton tab="tutorials" label="Tutorials" />
-                            {/* CHANGE 8: Added the new Syllabi tab button */}
-                            <TabButton tab="syllabi" label="Syllabi" />
-                        </div>
-
-                        {/* Resource Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {resourcesToShow()}
-                        </div>
                     </div>
-                </div>
-            </main>
+                </main>
+            </div>
         </>
     );
 }

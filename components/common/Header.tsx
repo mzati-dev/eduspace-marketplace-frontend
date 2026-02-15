@@ -2,7 +2,7 @@
 
 import { API_BASE_URL } from '@/services/api/api.constants';
 import { useAppContext } from '../../context/AppContext';
-import { BookOpen, ShoppingCart, ChevronDown, ChevronUp, Search, ExternalLink, FileText, Compass, BarChart, SlidersHorizontal, MessageSquare, Bell } from 'lucide-react';
+import { BookOpen, ShoppingCart, ChevronDown, ChevronUp, Search, ExternalLink, FileText, Compass, BarChart, SlidersHorizontal, MessageSquare, Bell, Menu, GraduationCap, Layout } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,8 @@ import NotificationScreen from '@/components/communication/NotificationScreen';
 import ChatScreen from '@/components/communication/ChatScreen';
 import { chatApiService, notificationApiService } from '@/services/api/api';
 
-export default function Header({ onCartClick }: { onCartClick?: () => void }) {
+// TO THIS:
+export default function Header({ onCartClick, onMenuClick }: { onCartClick?: () => void; onMenuClick?: () => void }) {
     const { user, logout, cart, searchTerm, setSearchTerm, unreadMessageCount, setUnreadMessageCount, unreadNotificationCount, setUnreadNotificationCount } = useAppContext();
     const pathname = usePathname();
     const [isExploreDropdownOpen, setIsExploreDropdownOpen] = useState(false);
@@ -19,67 +20,6 @@ export default function Header({ onCartClick }: { onCartClick?: () => void }) {
     const [isChatOpen, setIsChatOpen] = useState(false);
 
 
-
-    // useEffect(() => {
-    //     if (!user) return; 
-
-    //     const fetchData = async () => {
-    //         try {
-
-    //             const [notifications, conversations] = await Promise.all([
-    //                 notificationApiService.getNotifications(),
-    //                 chatApiService.getConversations()
-    //             ]);
-
-
-    //             const unreadNotifications = notifications.filter(n => !n.isRead).length;
-    //             setUnreadNotificationCount(unreadNotifications);
-
-
-    //             const unreadMessages = conversations.reduce((total, conv) => total + (conv.unreadCount || 0), 0);
-    //             setUnreadMessageCount(unreadMessages);
-
-    //         } catch (error) {
-    //             console.error("Failed to fetch initial data for header:", error);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, [user]); 
-
-    // Header.tsx
-
-    // V V V V V REPLACE YOUR OLD useEffect WITH THIS ONE V V V V V
-    // useEffect(() => {
-    //     // If there is no user, do nothing.
-    //     if (!user) {}return;
-
-    //     // This function will run once to get the starting count.
-    //     const fetchData = async () => {
-    //         try {
-    //             // 1. Call the API to get the total number of unread messages.
-    //             const unreadData = await chatApiService.getTotalUnreadCount();
-
-    //             // 2. Update the GLOBAL state with the number from the API.
-    //             // This will make the red badge appear with the correct number.
-    //             setUnreadMessageCount(unreadData.count);
-
-    //             // Your code for fetching notifications can remain here if you have it.
-    //             const [notifications] = await Promise.all([
-    //                 notificationApiService.getNotifications(),
-    //             ]);
-    //             const unreadNotifications = notifications.filter(n => !n.isRead).length;
-    //             setUnreadNotificationCount(unreadNotifications);
-
-    //         } catch (error) {
-    //             console.error("Failed to fetch initial data for header:", error);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, [user, setUnreadMessageCount]); // This tells React to re-run the effect if the user logs in/out.
-
-    // Header.tsx
 
     // V V V V V REPLACE YOUR OLD useEffect WITH THIS ONE V V V V V
     useEffect(() => {
@@ -124,90 +64,21 @@ export default function Header({ onCartClick }: { onCartClick?: () => void }) {
             <header className="bg-slate-900/70 backdrop-blur-md border-b border-slate-700 sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
+
+                        {/* ===== START: ADD MENU BUTTON FOR MOBILE ===== */}
+                        <button
+                            onClick={onMenuClick}
+                            className="p-2 rounded-lg text-slate-400 hover:bg-slate-700 hover:text-white lg:hidden mr-2"
+                        >
+                            <Menu size={24} />
+                        </button>
+                        {/* ===== END: ADD MENU BUTTON ===== */}
                         {/* Left - Logo */}
                         <div className="flex items-center">
-                            {/* <BookOpen className="h-8 w-8 text-blue-500" />
-                        <h1 className="ml-3 text-xl font-bold text-white">Annex</h1> */}
-                            {/* ======================= THE CHANGE IS HERE ======================= */}
-                            {/* The Icon and H1 are now wrapped in a Link component */}
-                            <Link href="/dashboard" className="flex items-center group">
-                                <BookOpen className="h-8 w-8 text-blue-500 group-hover:text-blue-400 transition-colors" />
-                                <h1 className="ml-3 text-xl font-bold text-white group-hover:text-slate-300 transition-colors">Annex</h1>
-                            </Link>
-                            {/* ===================== END OF CHANGE ====================== */}
+
 
                             {/* Explore Dropdown */}
-                            <div
-                                // MODIFICATION: Added padding-top to bridge the gap
-                                className="relative ml-15 hidden md:block pt-2"
-                                onMouseLeave={() => setIsExploreDropdownOpen(false)}
-                            >
-                                <button
-                                    onMouseEnter={() => setIsExploreDropdownOpen(true)}
-                                    className="flex items-center text-slate-300 hover:text-white transition-colors"
-                                >
-                                    <Compass className="h-5 w-5 mr-1" />
-                                    <span className="cursor-pointer"> Explore </span>
-                                    {isExploreDropdownOpen ? <ChevronUp className="h-4 w-4 ml-1" /> : <ChevronDown className="h-4 w-4 ml-1" />}
-                                </button>
 
-                                {isExploreDropdownOpen && (
-                                    <div
-                                        // MODIFICATION: Removed margin-top (mt-2)
-                                        className="absolute left-0 w-48 bg-slate-800 rounded-md shadow-lg py-1 z-50 border border-slate-700"
-                                        onClick={() => setIsExploreDropdownOpen(false)}
-                                    >
-                                        <Link
-                                            href="eduspace-lms"
-
-
-                                            className="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-                                        >
-                                            <ExternalLink className="h-4 w-4 mr-2" />
-                                            Eduspace LMS
-                                        </Link>
-                                        {/* {user?.role === 'student' && (
-                                        <Link
-                                            href="/find-online-tutor"
-                                            className="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-                                        >
-                                            <Compass className="h-4 w-4 mr-2" />
-                                            Find online tutor
-                                        </Link>
-                                    )} */}
-                                        {/* ======================= THE CHANGE IS HERE ======================= */}
-                                        {/* This block now intelligently shows the correct link based on user role. */}
-
-                                        {/* {user?.role === 'student' && (
-                                        <Link
-                                            href="/find-online-tutor"
-                                            className="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-                                        >
-                                            <Compass className="h-4 w-4 mr-2" />
-                                            Find Online Tutor
-                                        </Link>
-                                    )}
-
-                                    {user?.role === 'teacher' && (
-                                        <Link
-                                            href="/find-online-tutor"
-                                            className="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-                                        >
-                                            <BarChart className="h-4 w-4 mr-2" />
-                                            Tutor Dashboard
-                                        </Link>
-                                    )} */}
-                                        {/* ===================== END OF CHANGE ====================== */}
-                                        <Link
-                                            href="/resources"
-                                            className="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-                                        >
-                                            <FileText className="h-4 w-4 mr-2" />
-                                            Online Libra
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
                         </div>
 
                         {/* Center - Search bar (students and teachers) - UNCHANGED */}
@@ -306,53 +177,56 @@ export default function Header({ onCartClick }: { onCartClick?: () => void }) {
                                         <img
                                             src={fullProfileImageUrl} // Use the new variable here
                                             alt="User profile"
-                                            className="h-10 w-10 rounded-full cursor-pointer  object-cover border-2 border-transparent group-hover:border-blue-500"
+                                            className="h-10 w-10 rounded-full object-cover border-2 border-transparent group-hover:border-blue-500"
                                         />
-                                        {isUserDropdownOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                                        {/* {isUserDropdownOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />} */}
                                     </button>
 
-                                    {isUserDropdownOpen && (
-                                        <div
+
+
+
+
+                                    {/* <div
                                             // MODIFICATION: Removed margin-top (mt-2)
                                             className="absolute right-0 w-40 bg-slate-800 rounded-md shadow-lg py-1 z-50 border border-slate-700"
                                             onClick={() => setIsUserDropdownOpen(false)}
-                                        >
-                                            <div className="px-4 py-2 text-sm text-slate-300 border-b border-slate-700">
+                                        > */}
+                                    {/* <div className="px-4 py-2 text-sm text-slate-300 border-b border-slate-700">
                                                 <div className="text-xs text-blue-400 capitalize">{user.role}</div>
-                                            </div>
+                                            </div> */}
 
-                                            {/* Profile link */}
-                                            <Link
+                                    {/* Profile link */}
+                                    {/* <Link
                                                 href="/account"
                                                 className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors cursor-pointer"
                                             >
                                                 Profile
-                                            </Link>
+                                            </Link> */}
 
-                                            {/* Settings link */}
-                                            <Link
+                                    {/* Settings link */}
+                                    {/* <Link
                                                 href="/settings"
                                                 className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors cursor-pointer"
                                             >
                                                 Settings
-                                            </Link>
-                                            <Link
+                                            </Link> */}
+                                    {/* <Link
                                                 href="/help"
                                                 className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors cursor-pointer"
                                             >
                                                 Help & Support
-                                            </Link>
+                                            </Link> */}
 
-                                            <button
+                                    {/* <button
                                                 onClick={() => {
                                                     logout();
                                                 }}
                                                 className="block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors cursor-pointer"
                                             >
                                                 Logout
-                                            </button>
-                                        </div>
-                                    )}
+                                            </button> */}
+                                    {/* </div> */}
+
                                 </div>
                             </div>
                         )}

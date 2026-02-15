@@ -6,6 +6,7 @@ import { User, Mail, Phone, Edit, Users, CalendarDays, PersonStanding } from 'lu
 import Header from '@/components/common/Header';
 import { userApiService } from '@/services/api/api';
 import { API_BASE_URL } from '@/services/api/api.constants';
+import SideMenu from '@/components/common/SideMenu';
 
 
 // Typed helper component
@@ -21,7 +22,8 @@ const ProfileDetail = ({ icon: Icon, label, value }: { icon: React.ElementType; 
 
 export default function AccountPage() {
     const { user, setUser } = useAppContext();
-
+    const [isSideMenuOpen, setSideMenuOpen] = useState(false); // ADD THIS
+    const [isCollapsed, setIsCollapsed] = useState(false); // ===== ADD THIS =====
     // --- START OF FIXES ---
     // 1. Explicitly type the state hooks to allow for 'File | null' and 'string | null'
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -34,6 +36,7 @@ export default function AccountPage() {
         dob: user?.dob ? user.dob.slice(0, 10) : '',
         gender: user?.gender || '',
     });
+
 
 
 
@@ -123,8 +126,20 @@ export default function AccountPage() {
 
     return (
         <>
-            <Header />
-            <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8">
+            {/* ADD SIDEMENU */}
+            <SideMenu
+                userRole={user.role}
+                isOpen={isSideMenuOpen}
+                onClose={() => setSideMenuOpen(false)}
+                onMenuClick={() => setSideMenuOpen(true)}
+                onCollapse={setIsCollapsed}
+            />
+            <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+                <Header
+                    onMenuClick={() => setSideMenuOpen(true)}
+                />
+            </div>
+            <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8 lg:pl-64">
                 <div className="max-w-4xl mx-auto">
                     <h1 className="text-4xl font-bold mb-8">My Account</h1>
                     <div className="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl overflow-hidden">

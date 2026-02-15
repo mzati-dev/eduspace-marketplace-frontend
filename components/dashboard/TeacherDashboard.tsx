@@ -12,7 +12,7 @@ import Modal from '../common/Modal';
 import { TeacherApiService } from '@/services/api/teacher-api.service';
 import { useRouter } from 'next/navigation';
 
-export default function TeacherDashboard() {
+export default function TeacherDashboard({ isSidebarOpen }: { isSidebarOpen: boolean }) {
     const router = useRouter();
     const { user, searchTerm } = useAppContext();
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -165,20 +165,21 @@ export default function TeacherDashboard() {
         <div className="relative">
             {/* Fixed header section */}
             <div className="fixed left-0 right-0 bg-slate-900/90 backdrop-blur-md z-20 p-6 border-b border-slate-700 -mt-8">
-                <div className="max-w-7xl mx-auto">
+                {/* <div className="max-w-7xl mx-auto"> */}
+                <div className={`max-w-7xl mx-auto ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-3xl font-bold text-white">
                             Welcome back, {user?.name?.split(' ')[0]}!
                         </h2>
 
                         <div className="flex gap-3">
-                            <button
+                            {/* <button
                                 onClick={() => router.push('/find-online-tutor')}
                                 className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2"
                             >
                                 <BarChart className="h-4 w-4 mr-2" />
                                 Tutoring
-                            </button>
+                            </button> */}
 
                             <Button className="cursor-pointer" onClick={handleAddNew}>
                                 <Plus className="h-5 w-5 mr-2" />
@@ -197,7 +198,7 @@ export default function TeacherDashboard() {
 
             {/* Scrollable content section */}
             <div className="pt-[220px]">
-                <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mx-auto max-w-7xl -mt-8">
+                <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 -mt-8">
                     <h3 className="text-xl font-bold text-white mb-4">My Published Lessons</h3>
 
                     {teacherLessons.length > 0 ? (

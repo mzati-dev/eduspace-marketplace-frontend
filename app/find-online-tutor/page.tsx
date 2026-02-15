@@ -1,14 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import Header from '@/components/common/Header';
 import StudentTutorFinder from './components/StudentView';
 import TeacherTutorDashboard from './components/TeacherView';
+import SideMenu from '@/components/common/SideMenu';
 
 
 export default function FindTutorPage() {
     const { user } = useAppContext();
+    const [isSideMenuOpen, setSideMenuOpen] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false); // ===== ADD THIS =====
 
 
     useEffect(() => {
@@ -29,12 +32,26 @@ export default function FindTutorPage() {
 
     return (
         <>
-            <Header />
-            {/* This is the core logic: 
+            {/* ADD SIDEMENU */}
+            <SideMenu
+                userRole={user.role}
+                isOpen={isSideMenuOpen}
+                onClose={() => setSideMenuOpen(false)}
+                onMenuClick={() => setSideMenuOpen(true)}  // ===== ADD THIS =====
+                onCollapse={setIsCollapsed}                // ===== ADD THIS =====
+            />
+            <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+                {/* ADD LEFT MARGIN WRAPPER */}
+                <Header
+                    onMenuClick={() => setSideMenuOpen(true)} // ADD THIS
+                />
+
+                {/* This is the core logic: 
               - If the user is a 'teacher', show the Teacher dashboard.
               - Otherwise (for 'student'), show the Student finder page.
             */}
-            {user.role === 'teacher' ? <TeacherTutorDashboard /> : <StudentTutorFinder />}
+                {user.role === 'teacher' ? <TeacherTutorDashboard /> : <StudentTutorFinder />}
+            </div>
         </>
     );
 }

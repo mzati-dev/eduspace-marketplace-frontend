@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, GraduationCap, Briefcase, X } from 'lucide-react';
+import { BookOpen, GraduationCap, Briefcase, X, EyeOff, Eye } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
 import { AuthApiService } from '@/services/auth.service';
 import { UserProfile } from '@/types';
@@ -22,6 +22,9 @@ export default function App() {
         confirmPassword: ''
     });
     const [loginData, setLoginData] = useState({ email: '', password: '' });
+    const [showLoginPassword, setShowLoginPassword] = useState(false);
+    const [showSignupPassword, setShowSignupPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState('');
     const [selectedRole, setSelectedRole] = useState<'student' | 'teacher'>('student');
     const [signupStage, setSignupStage] = useState<SignupStage>('role-selection');
@@ -31,24 +34,6 @@ export default function App() {
     const authService = new AuthApiService();
     const router = useRouter();
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem('token');
-    //     if (token && !user) {
-    //         authService.getProfile()
-    //             .then(profile => {
-    //                 login(profile);
-    //                 router.replace('/dashboard');
-    //             })
-    //             .catch(() => {
-    //                 localStorage.removeItem('token');
-    //                 setLoading(false);
-    //             });
-    //     } else if (user) {
-    //         router.replace('/dashboard');
-    //     } else {
-    //         setLoading(false);
-    //     }
-    // }, [user]);
 
     // The new, corrected useEffect
     useEffect(() => {
@@ -61,7 +46,7 @@ export default function App() {
                 // Otherwise, send them to the regular student/teacher dashboard.
                 router.replace('/dashboard');
             }
-            // ^ ^ ^ ^ ^ END OF THE NEW LOGIC ^ ^ ^ ^ ^
+
         };
 
         const token = localStorage.getItem('token');
@@ -127,26 +112,6 @@ export default function App() {
     };
 
 
-    // const handleSignupSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     if (signupData.password !== signupData.confirmPassword) {
-    //         alert("Passwords don't match!");
-    //         return;
-    //     }
-
-    //     try {
-    //         const response = await authService.register({
-    //             ...signupData,
-    //             role: selectedRole
-    //         });
-    //         localStorage.setItem('token', response.token);
-    //         login(response.user);
-    //         router.replace('/dashboard'); // ✅ go straight to dashboard
-    //     } catch (error) {
-    //         alert(getErrorMessage(error));
-    //     }
-    // };
-
     const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoginLoading(true);
@@ -173,18 +138,7 @@ export default function App() {
         }
     };
 
-    // const handleLoginSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     setLoginLoading(true);
-    //     try {
-    //         const response = await authService.login(loginData.email, loginData.password);
-    //         localStorage.setItem('token', response.token);
-    //         login(response.user);
-    //         router.replace('/dashboard'); // ✅ go straight to dashboard
-    //     } catch (error) {
-    //         alert(getErrorMessage(error));
-    //     }
-    // };
+
 
     const handleForgotSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -252,19 +206,29 @@ export default function App() {
                                 className={sharedInputClasses}
                                 required
                             />
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                value={loginData.password}
-                                onChange={e => setLoginData({ ...loginData, password: e.target.value })}
-                                className={sharedInputClasses}
-                                required
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showLoginPassword ? "text" : "password"}
+                                    placeholder="Password"
+                                    value={loginData.password}
+                                    onChange={e => setLoginData({ ...loginData, password: e.target.value })}
+                                    className={`${sharedInputClasses} pr-10`}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                >
+                                    {showLoginPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </div>
+
                             <div className="text-right">
                                 <button
                                     type="button"
                                     onClick={() => setAuthView('forgotPassword')}
-                                    className="text-sm text-blue-400 hover:underline"
+                                    className="text-sm text-blue-400 hover:underline cursor-pointer"
                                 >
                                     Forgot Password?
                                 </button>
@@ -275,7 +239,7 @@ export default function App() {
                             <button
                                 type="submit"
                                 className={`w-full px-8 py-3 rounded-lg font-semibold shadow-lg transition
-        ${loginLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
+        ${loginLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 cursor-pointer'}`}
                                 disabled={loginLoading}
                             >
                                 {loginLoading ? 'Logging in...' : 'Login'}
@@ -319,7 +283,7 @@ export default function App() {
                             </div>
                             <button
                                 onClick={() => setSignupStage('form')}
-                                className="w-full px-8 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold shadow-lg transition"
+                                className="w-full px-8 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold shadow-lg transition cursor-pointer"
                             >
                                 Continue
                             </button>
@@ -329,7 +293,10 @@ export default function App() {
                     return (
                         <div className="flex flex-col h-full">
                             <div className="flex justify-center mb-4 border-b border-slate-700">
-                                <button onClick={() => setAuthView('login')}>Login</button>
+                                <button onClick={() => setAuthView('login')}
+
+                                >Login
+                                </button>
                                 <button
                                     onClick={() => setAuthView('signup')}
                                     className={`px-6 py-2 text-lg font-semibold transition-colors ${authView === 'signup' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-slate-300'}`}
@@ -382,28 +349,47 @@ export default function App() {
                                         <option value="other">Other</option>
                                         <option value="prefer-not-to-say">Prefer not to say</option>
                                     </select>
-                                    <input
-                                        type="password"
-                                        placeholder="Password"
-                                        value={signupData.password}
-                                        onChange={e => setSignupData({ ...signupData, password: e.target.value })}
-                                        className={sharedInputClasses}
-                                        required
-                                    />
-                                    <input
-                                        type="password"
-                                        placeholder="Confirm Password"
-                                        value={signupData.confirmPassword}
-                                        onChange={e => setSignupData({ ...signupData, confirmPassword: e.target.value })}
-                                        className={sharedInputClasses}
-                                        required
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showSignupPassword ? "text" : "password"}
+                                            placeholder="Password"
+                                            value={signupData.password}
+                                            onChange={e => setSignupData({ ...signupData, password: e.target.value })}
+                                            className={`${sharedInputClasses} pr-10`}
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowSignupPassword(!showSignupPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                        >
+                                            {showSignupPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        </button>
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            placeholder="Confirm Password"
+                                            value={signupData.confirmPassword}
+                                            onChange={e => setSignupData({ ...signupData, confirmPassword: e.target.value })}
+                                            className={`${sharedInputClasses} pr-10`}
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                        >
+                                            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        </button>
+                                    </div>
+
                                 </form>
                             </div>
                             <button
                                 type="submit"
                                 onClick={handleSignupSubmit}
-                                className="w-full px-8 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold shadow-lg transition mt-4"
+                                className="w-full px-8 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold shadow-lg transition mt-4 cursor-pointer"
                             >
                                 Create Account
                             </button>
@@ -427,13 +413,13 @@ export default function App() {
             <span className="font-bold text-blue-300">Your knowledge marketplace</span>
             <p className="max-w-xl text-center text-lg mb-10 leading-relaxed drop-shadow-md text-slate-300">
 
-                This is the marketplace where students unlock knowledge and educators turn expertise into impact, for all levels and lifelong learning.
+                The premier platform connecting ambitious learners with verified educators. Unlock your potential with personalized tutoring, premium lessons, or monetize your expertise by teaching what you love.
             </p>
 
             <div className="flex space-x-6">
                 <button
                     onClick={() => setAuthView('login')}
-                    className="px-8 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold shadow-lg transition"
+                    className="px-8 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold shadow-lg transition cursor-pointer"
                 >
                     Log In
                 </button>
@@ -442,7 +428,7 @@ export default function App() {
                         setAuthView('signup');
                         setSignupStage('role-selection');
                     }}
-                    className="px-8 py-3 border-2 border-blue-500 hover:bg-blue-500 hover:text-white rounded-lg font-semibold shadow-lg transition"
+                    className="px-8 py-3 border-2 border-blue-500 hover:bg-blue-500 hover:text-white rounded-lg font-semibold shadow-lg transition cursor-pointer"
                 >
                     Sign Up
                 </button>
@@ -475,7 +461,7 @@ export default function App() {
             )}
 
             <footer className="mt-20 text-sm text-slate-400 opacity-80">
-                © {new Date().getFullYear()} Eduspace Marketplace. All rights reserved.
+                © {new Date().getFullYear()} Mzatinova. All rights reserved.
             </footer>
         </main>
     );

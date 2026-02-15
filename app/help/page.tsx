@@ -5,6 +5,7 @@ import { useAppContext } from '@/context/AppContext';
 import Header from '@/components/common/Header';
 import { ChevronDown, ChevronUp, Send, Loader2, CheckCircle } from 'lucide-react';
 import { supportApiService } from '@/services/api/api';
+import SideMenu from '@/components/common/SideMenu';
 
 
 const FaqItem = ({ question, answer, isOpen, onClick }: { question: string, answer: string, isOpen: boolean, onClick: () => void }) => (
@@ -24,6 +25,8 @@ const FaqItem = ({ question, answer, isOpen, onClick }: { question: string, answ
 
 export default function HelpPage() {
     const { user } = useAppContext();
+    const [isSideMenuOpen, setSideMenuOpen] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false); // ===== ADD THIS =====
     const [openFaq, setOpenFaq] = useState<number | null>(null);
 
 
@@ -95,8 +98,20 @@ export default function HelpPage() {
 
     return (
         <>
-            <Header />
-            <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8">
+            {/* ADD SIDEMENU */}
+            <SideMenu
+                userRole={user.role}
+                isOpen={isSideMenuOpen}
+                onClose={() => setSideMenuOpen(false)}
+                onMenuClick={() => setSideMenuOpen(true)}  // ===== ADD THIS =====
+                onCollapse={setIsCollapsed}                // ===== ADD THIS =====
+            />
+            <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+                <Header
+                    onMenuClick={() => setSideMenuOpen(true)}
+                />
+            </div>
+            <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8 lg:pl-64">
                 <div className="max-w-4xl mx-auto">
                     {/* Hero and FAQ Section (No changes here) */}
                     <div className="text-center mb-16">
