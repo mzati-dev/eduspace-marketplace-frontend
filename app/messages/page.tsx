@@ -10,6 +10,7 @@ export default function MessagesPage() {
     const { user } = useAppContext();
     const [isSideMenuOpen, setSideMenuOpen] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false); // ===== ADD THIS =====
+    const [showChat, setShowChat] = useState(true);
 
     if (!user) {
         return null;
@@ -30,9 +31,20 @@ export default function MessagesPage() {
                     onMenuClick={() => setSideMenuOpen(true)}
                 />
                 <main className="h-[calc(100vh-4rem)] ">
-                    <ChatScreen onClose={() => { }} />
+                    {/* <ChatScreen onClose={() => { }} /> */}
+                    {showChat && <ChatScreen onClose={() => setShowChat(false)} />}
+
                 </main>
             </div>
+            {/* Optional: button to reopen chat */}
+            {!showChat && (
+                <button
+                    onClick={() => setShowChat(true)}
+                    className="fixed bottom-5 right-5 p-3 bg-blue-600 rounded-full cursor-pointer"
+                >
+                    Open Chat
+                </button>
+            )}
         </div>
     );
 }

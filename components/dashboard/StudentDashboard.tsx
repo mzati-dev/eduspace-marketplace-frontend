@@ -139,15 +139,21 @@ export default function StudentDashboard({ isSidebarOpen }: { isSidebarOpen: boo
             {/* Cart Modal */}
             <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
-            <div className="fixed left-0 right-0 bg-slate-900/90 backdrop-blur-md z-20 p-6 border-b border-slate-700 -mt-8">
+            {/* <div className="fixed left-0 right-0 bg-slate-900/90 backdrop-blur-md z-20 p-6 border-b border-slate-700 -mt-8"> */}
+            <div className="relative lg:fixed left-0 right-0 bg-slate-900/90 backdrop-blur-md z-20 p-3 sm:p-4 lg:p-6 border-b border-slate-700 -mt-4 sm:-mt-6 lg:-mt-8">
+
                 <div className="flex justify-center items-center mb-6">
-                    <h2 className="text-3xl font-bold text-white">
+                    {/* <h2 className="text-3xl font-bold text-white"> */}
+                    <h2 className="text-lg sm:text-xl lg:text-3xl font-bold text-white text-center">
+
                         Welcome back, {user?.name.split(' ')[0]}!
                     </h2>
 
                 </div>
                 {/* <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 lg:ml-64"> */}
-                <div className={`max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+                {/* <div className={`max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 ${isSidebarOpen ? 'lg:ml-64' : ''}`}> */}
+                <div className={`max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+
                     <StatCard
                         icon={BookOpen}
                         title="Available Lessons"
@@ -162,23 +168,33 @@ export default function StudentDashboard({ isSidebarOpen }: { isSidebarOpen: boo
                         isActive={activeTab === 'myLessons'}
                         onClick={() => setActiveTab('myLessons')}
                     />
-                    <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700 flex flex-col justify-between">
+                    {/* <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700 flex flex-col justify-between">
                         <div className="flex flex-col md:flex-row gap-4 mt-4">
                             <FilterSelect value={selectedSubject} onChange={setSelectedSubject} options={subjects} />
                             <FilterSelect value={selectedForm} onChange={setSelectedForm} options={forms} />
                         </div>
+                    </div> */}
+                    <div className="bg-slate-800/60 rounded-lg p-3 sm:p-4 border border-slate-700">
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <FilterSelect value={selectedSubject} onChange={setSelectedSubject} options={subjects} />
+                            <FilterSelect value={selectedForm} onChange={setSelectedForm} options={forms} />
+                        </div>
                     </div>
+
                 </div>
             </div>
 
             {/* Main content with lesson cards */}
-            <div className="pt-[220px]">
+            {/* <div className="pt-[220px]"> */}
+            <div className="pt-6 lg:pt-[220px]">
                 <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 -mt-4">
                     {activeTab === 'available' ? (
                         <>
                             <h2 className="text-xl font-semibold mb-6 text-white">Available Lessons</h2>
                             {availableLessons.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                // <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+
                                     {availableLessons.map((lesson) => (
                                         <LessonCard
                                             key={lesson.id}
@@ -201,7 +217,9 @@ export default function StudentDashboard({ isSidebarOpen }: { isSidebarOpen: boo
                         <>
                             <h2 className="text-xl font-semibold mb-6 text-white">My Lessons</h2>
                             {myLessons.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                // <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+
                                     {myLessons.map((lesson) => (
                                         <LessonCard
                                             key={lesson.id}

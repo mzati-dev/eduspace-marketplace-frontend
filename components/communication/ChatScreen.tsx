@@ -34,32 +34,6 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
 
-    // useEffect(() => {
-    //     if (!user) return;
-    //     const newSocket = io(API_BASE_URL);
-    //     setSocket(newSocket);
-    //     newSocket.emit('joinRoom', user.id);
-    //     newSocket.on('newMessage', (incomingMessage: Message) => {
-    //         setMessages(prev => {
-    //             const conversationId = incomingMessage.conversation.id;
-    //             const existingMessages = prev[conversationId] || [];
-    //             if (existingMessages.some(msg => msg.id === incomingMessage.id)) {
-    //                 return prev;
-    //             }
-    //             return {
-    //                 ...prev,
-    //                 [conversationId]: [...existingMessages, incomingMessage],
-    //             };
-    //         });
-    //     });
-
-    //     return () => {
-    //         newSocket.off('newMessage');
-    //         newSocket.disconnect();
-    //     };
-    // }, [user]);
-
-
     // REPLACE your old socket useEffect with this new one
     useEffect(() => {
         if (!user) return;
@@ -122,12 +96,12 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
 
                         await handleSelectConversation(preselectedConversation);
                     }
-                } else if (convos.length > 0 && !activeConversation) {
+                    // } else if (convos.length > 0 && !activeConversation) {
 
-                    await handleSelectConversation(convos[0]);
+                    //     await handleSelectConversation(convos[0]);
+                    // }
+
                 }
-
-
             } catch (error) {
                 console.error("Failed to fetch conversations:", error);
             } finally {
@@ -143,17 +117,7 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
     }, [messages, activeConversation]);
 
 
-    // const handleSelectConversation = async (conv: Conversation) => {
-    //     setActiveConversation(conv);
-    //     if (!messages[conv.id]) {
-    //         try {
-    //             const history = await chatApiService.getMessages(conv.id);
-    //             setMessages(prev => ({ ...prev, [conv.id]: history }));
-    //         } catch (error) {
-    //             console.error(`Failed to fetch messages for conversation ${conv.id}:`, error);
-    //         }
-    //     }
-    // };
+
 
     // REPLACE your old function with this new one
     const handleSelectConversation = async (conv: Conversation) => {
@@ -213,13 +177,28 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
 
     return (
         // <div className="fixed inset-0 top-16 bg-slate-900 text-white flex z-50 h-[calc(100vh-4rem)] font-sans">
-        <div className="fixed bottom-5 right-5 w-[700px] h-[500px] max-h-[calc(100vh-40px)] bg-slate-900 text-white flex z-50 font-sans rounded-lg shadow-2xl overflow-hidden border border-slate-700">
-            <aside className={`w-full md:w-1/3 lg:w-1/4 bg-slate-800 border-r border-slate-700 flex flex-col transition-all duration-300 ${activeConversation ? 'hidden md:flex' : 'flex'}`}>
+        // <div className="fixed bottom-5 right-5 w-[700px] h-[500px] max-h-[calc(100vh-40px)] bg-slate-900 text-white flex z-50 font-sans rounded-lg shadow-2xl overflow-hidden border border-slate-700">
+        <div className="fixed inset-0 md:bottom-5 md:right-5 md:inset-auto md:w-[1300px] md:h-[650px] md:max-h-[calc(100vh-40px)] bg-slate-900 text-white flex z-50 font-sans md:rounded-lg shadow-2xl overflow-hidden border border-slate-700">
 
-                <header className="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
+            <aside className={`w-full md:w-1/3 lg:w-1/4 max-w-full bg-slate-800 border-r border-slate-700 flex flex-col transition-all duration-300 ${activeConversation ? 'hidden md:flex' : 'flex'}`}>
+
+                {/* <header className="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
                     <h1 className="text-xl font-bold">Messages</h1>
 
+                </header> */}
+                {/* <header className="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
+                    <h1 className="text-xl font-bold">Messages</h1>
+                    <button onClick={onClose} className="md:hidden text-slate-400 hover:text-red-500">
+                        <X size={20} />
+                    </button>
+                </header> */}
+                <header className="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
+                    <h1 className="text-xl font-bold">Messages</h1>
+                    <button onClick={onClose} className="text-slate-400 hover:text-red-500 cursor-pointer">
+                        <X size={24} />
+                    </button>
                 </header>
+
                 <div className="p-4 flex-shrink-0">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -233,7 +212,9 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                         if (!otherParticipant) return null;
                         return (
                             // REPLACE THE CONTENT OF THIS DIV
-                            <div key={conv.id} onClick={() => handleSelectConversation(conv)} className={`flex items-center p-4 cursor-pointer border-l-4 transition-colors ${activeConversation?.id === conv.id ? 'bg-slate-900 border-blue-500' : 'border-transparent hover:bg-slate-700/50'}`}>
+                            // <div key={conv.id} onClick={() => handleSelectConversation(conv)} className={`flex items-center p-4 cursor-pointer border-l-4 transition-colors ${activeConversation?.id === conv.id ? 'bg-slate-900 border-blue-500' : 'border-transparent hover:bg-slate-700/50'}`}>
+                            <div key={conv.id} onClick={() => handleSelectConversation(conv)} className={`flex items-center p-3 sm:p-4 cursor-pointer border-l-4 transition-colors ${activeConversation?.id === conv.id ? 'bg-slate-900 border-blue-500' : 'border-transparent hover:bg-slate-700/50'}`}>
+
                                 {/* <img src={otherParticipant.profileImageUrl || `https://ui-avatars.com/api/?name=${otherParticipant.name.replace(' ', '+')}&background=2563eb&color=fff&rounded=true`} alt={otherParticipant.name} className="w-12 h-12 rounded-full object-cover" /> */}
                                 <img
                                     src={otherParticipant.profileImageUrl
@@ -266,21 +247,7 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                             </div>
                         )
                     })}
-                    {/* {!isLoading && conversations.map(conv => {
-                        const otherParticipant = getOtherParticipant(conv);
-                        if (!otherParticipant) return null;
-                        return (
-                            <div key={conv.id} onClick={() => handleSelectConversation(conv)} className={`flex items-center p-4 cursor-pointer border-l-4 transition-colors ${activeConversation?.id === conv.id ? 'bg-slate-900 border-blue-500' : 'border-transparent hover:bg-slate-700/50'}`}>
-                                <img src={otherParticipant.profileImageUrl || `https://ui-avatars.com/api/?name=${otherParticipant.name.replace(' ', '+')}&background=2563eb&color=fff&rounded=true`} alt={otherParticipant.name} className="w-12 h-12 rounded-full object-cover" />
-                                <div className="ml-4 flex-grow overflow-hidden">
-                                    <div className="flex justify-between items-center">
-                                        <h3 className="font-semibold truncate">{otherParticipant.name}</h3>
-                                        <span className="text-xs text-slate-400 flex-shrink-0 ml-2">{formatTimestamp(conv.updatedAt)}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    })} */}
+
                 </div>
             </aside>
             <main className={`flex-1 flex-col ${activeConversation ? 'flex' : 'hidden md:flex'}`}>
@@ -288,7 +255,14 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                     <>
                         <header className="bg-slate-800 p-4 border-b border-slate-700 flex items-center justify-between flex-shrink-0">
                             <div className="flex items-center">
-                                <button className="md:hidden mr-4 text-slate-300" onClick={() => setActiveConversation(null)}><ArrowLeft size={20} /></button>
+                                {/* <button className="md:hidden mr-4 text-slate-300" onClick={() => setActiveConversation(null)}><ArrowLeft size={20} /></button> */}
+
+                                <button
+                                    className="md:hidden mr-3 text-slate-300"
+                                    onClick={() => setActiveConversation(null)}
+                                >
+                                    <MoreVertical size={20} />
+                                </button>
                                 {/* <img src={otherUser.profileImageUrl || `https://ui-avatars.com/api/?name=${otherUser.name.replace(' ', '+')}`} alt={otherUser.name} className="w-10 h-10 rounded-full mr-3 object-cover" /> */}
                                 <img
                                     src={otherUser.profileImageUrl
@@ -297,7 +271,9 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                                     alt={otherUser.name}
                                     className="w-10 h-10 rounded-full mr-3 object-cover"
                                 />
-                                <div><h2 className="font-semibold text-lg">{otherUser.name}</h2></div>
+                                {/* <div><h2 className="font-semibold text-lg">{otherUser.name}</h2></div> */}
+                                <div><h2 className="font-semibold text-base sm:text-lg">{otherUser.name}</h2></div>
+
                             </div>
                             <div className="relative group inline-block">
                                 <button onClick={onClose} className="text-slate-400 hover:text-red-700 cursor-pointer"><X size={24} /></button>
@@ -308,32 +284,18 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                                 {/* <div className="flex items-center space-x-4"><button className="text-slate-400 hover:text-white"><Phone size={20} /></button><button className="text-slate-400 hover:text-white"><Video size={20} /></button><button className="text-slate-400 hover:text-white"><MoreVertical size={20} /></button></div> */}
                             </div>
                         </header>
-                        <div className="flex-grow p-6 overflow-y-auto bg-slate-900">
+                        {/* <div className="flex-grow p-6 overflow-y-auto bg-slate-900"> */}
+                        <div className="flex-grow p-3 sm:p-6 overflow-y-auto bg-slate-900">
+
                             <div className="space-y-6">
-                                {/* {activeConvMessages.map(msg => (
-                                    <div key={msg.id} className={`flex items-end gap-3 ${msg.author.id === user?.id ? 'justify-end' : 'justify-start'}`}>
-                                        {msg.author.id !== user?.id && <img src={msg.author.profileImageUrl || `https://ui-avatars.com/api/?name=${msg.author.name.replace(' ', '+')}`} alt={msg.author.name} className="w-8 h-8 rounded-full self-start" />}
-                                        <div className={`max-w-xs lg:max-w-md rounded-2xl px-4 py-2.5 ${msg.author.id === user?.id ? 'bg-blue-600 rounded-br-none' : 'bg-slate-700 rounded-bl-none'}`}>
-                                            <p className="text-sm">{msg.content}</p>
-                                            <p className="text-xs text-slate-400/80 text-right mt-1">{formatTimestamp(msg.timestamp)}</p>
-                                        </div>
-                                    </div>
-                                ))} */}
+
                                 {activeConvMessages.map(msg => {
                                     const authorProfile = activeConversation.participants.find(p => p.id === msg.author.id);
 
                                     return (
                                         <div key={msg.id} className={`flex items-end gap-3 ${msg.author.id === user?.id ? 'justify-end' : 'justify-start'}`}>
-                                            {/* {msg.author.id !== user?.id && (
-                                                // <img
-                                                //     src={authorProfile?.profileImageUrl
-                                                //         ? `${API_BASE_URL}${authorProfile.profileImageUrl}`
-                                                //         : `https://ui-avatars.com/api/?name=${authorProfile?.name.replace(' ', '+') || 'A'}`}
-                                                //     alt={authorProfile?.name || 'User Avatar'}
-                                                //     className="w-8 h-8 rounded-full self-start object-cover"
-                                                // />
-                                            )} */}
-                                            <div className={`max-w-xs lg:max-w-md rounded-2xl px-4 py-2.5 ${msg.author.id === user?.id ? 'bg-blue-600 rounded-br-none' : 'bg-slate-700 rounded-bl-none'}`}>
+
+                                            <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md rounded-2xl px-4 py-2.5 ${msg.author.id === user?.id ? 'bg-blue-600 rounded-br-none' : 'bg-slate-700 rounded-bl-none'}`}>
                                                 <p className="text-sm">{msg.content}</p>
                                                 <p className="text-xs text-slate-400/80 text-right mt-1">{formatTimestamp(msg.timestamp)}</p>
                                             </div>
@@ -343,15 +305,18 @@ export default function ChatScreen({ onClose }: { onClose: () => void }) {
                                 <div ref={messagesEndRef} />
                             </div>
                         </div>
-                        <footer className="p-4 bg-slate-800 border-t border-slate-700 flex-shrink-0">
+                        {/* <footer className="p-4 bg-slate-800 border-t border-slate-700 flex-shrink-0"> */}
+                        <footer className="p-2 sm:p-4 bg-slate-800 border-t border-slate-700 flex-shrink-0">
+
                             <div className="flex items-center bg-slate-700 rounded-lg px-2">
-                                <textarea value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }} placeholder="Type a message..." rows={1} className="w-full bg-transparent p-3 text-white placeholder-slate-400 focus:outline-none resize-none max-h-24" />
+                                <textarea value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }} placeholder="Type a message..." rows={1} className="w-full bg-transparent p-2 sm:p-3 text-white placeholder-slate-400 focus:outline-none resize-none max-h-24" />
                                 <button onClick={handleSendMessage} className="p-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed" disabled={!newMessage.trim()}><Send size={20} /></button>
                             </div>
                         </footer>
                     </>
                 ) : (
                     <div className="flex-col items-center justify-center h-full text-slate-500 hidden md:flex">
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-square-text mb-4"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M13 8H7" /><path d="M17 12H7" /></svg>
                         <h2 className="text-xl font-medium">Select a conversation</h2>
                         <p className="text-sm">Choose from your existing conversations to start chatting.</p>
