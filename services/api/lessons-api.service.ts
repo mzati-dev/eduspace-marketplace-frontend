@@ -21,6 +21,10 @@ export class LessonsApiService extends BaseApiService {
         return this.post<Lesson>(API_ENDPOINTS.LESSONS, lessonData);
     }
 
+    async getAllLessons(): Promise<Lesson[]> {
+        return this.get<Lesson[]>(API_ENDPOINTS.LESSONS);
+    }
+
     // 3. UPDATED: No more FormData.
     async updateLesson(id: string, lessonData: Partial<CreateLessonPayload>): Promise<Lesson> {
         return this.put<Lesson>(`${API_ENDPOINTS.LESSONS}/${id}`, lessonData);

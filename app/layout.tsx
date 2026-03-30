@@ -6,7 +6,7 @@ import { Providers } from './providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Eduspace Marketplace | The knowledge marketplace',
+  title: 'Eduspace Hub',
   description: 'Eduspace Marketplace is the marketplace where students unlock knowledge and educators turn expertise into impact, for all levels and lifelong learning.',
   icons: {
     icon: '/edumarketplacelogo.png',

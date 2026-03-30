@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAppContext } from '../../context/AppContext';
+
 import { FileText, Book, Youtube, PenSquare, FilePlus2, Download, UploadCloud, GraduationCap, School, Filter, Calendar } from 'lucide-react';
 import Link from 'next/link';
-import Header from '@/components/common/Header';
-import SideMenu from '@/components/common/SideMenu';
+// import Header from '@/components/common/Header';
+// import SideMenu from '@/components/common/SideMenu';
 
 // --- TYPE DEFINITIONS ---
 type EducationLevel = 'primary' | 'secondary';
@@ -725,33 +725,40 @@ const TeacherToolCard = ({ icon: Icon, title, description, href, ctaText = "Crea
 );
 
 // --- MAIN PAGE COMPONENT ---
-export default function ResourcesPage() {
-    const { user } = useAppContext();
-    const [selectedLevel, setSelectedLevel] = useState<EducationLevel>('primary');
+export default function ResourcesPage({ selectedLevel: propSelectedLevel }: { selectedLevel?: 'primary' | 'secondary' }) {
+
+    const [selectedLevel, setSelectedLevel] = useState<'primary' | 'secondary'>(propSelectedLevel || 'primary');
+
+
     const [selectedType, setSelectedType] = useState<ResourceType>('textbooks');
     const [selectedYear, setSelectedYear] = useState<string>('');
     const [selectedSubject, setSelectedSubject] = useState<Subject>('All Subjects');
     const [selectedPaperType, setSelectedPaperType] = useState<PaperType | ''>('');
     const [selectedGrade, setSelectedGrade] = useState<string>('all');
     const [selectedTerm, setSelectedTerm] = useState<string>('all');
-    const [isSideMenuOpen, setSideMenuOpen] = useState(false);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+
 
     // Security Guard
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (!user) { window.location.replace('/'); }
-        }, 100);
-        return () => clearTimeout(timer);
-    }, [user]);
+    // useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //         if (!user) { window.location.replace('/'); }
+    //     }, 100);
+    //     return () => clearTimeout(timer);
+    // }, [user]);
 
-    if (!user) {
-        return (
-            <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">
-                <p>Loading resources...</p>
-            </div>
-        );
-    }
+    // if (!user) {
+    //     return (
+    //         <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">
+    //             <p>Loading resources...</p>
+    //         </div>
+    //     );
+    // }
+
+    useEffect(() => {
+        if (propSelectedLevel) {
+            setSelectedLevel(propSelectedLevel);
+        }
+    }, [propSelectedLevel]);
 
     const primaryGrades = [
         { value: 'standard1' as PrimaryGrade, label: 'Standard 1' },
@@ -784,9 +791,9 @@ export default function ResourcesPage() {
     ];
 
     // For students, remove the 'schemes' option completely
-    const resourceTypes = user.role === 'student'
-        ? allResourceTypes.filter(type => type.value !== 'schemes')
-        : allResourceTypes;
+    // const resourceTypes = user.role === 'student'
+    //     ? allResourceTypes.filter(type => type.value !== 'schemes')
+    //     : allResourceTypes;
 
     const paperTypes: { value: PaperType; label: string }[] = [
         { value: 'pslce', label: 'PSLCE (MANEB)' },
@@ -836,23 +843,50 @@ export default function ResourcesPage() {
 
     return (
         <>
-            <SideMenu
+            {/* <SideMenu
                 userRole={user.role}
                 isOpen={isSideMenuOpen}
                 onClose={() => setSideMenuOpen(false)}
                 onMenuClick={() => setSideMenuOpen(true)}
                 onCollapse={setIsCollapsed}
-            />
-            <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
-                <Header onMenuClick={() => setSideMenuOpen(true)} />
+            /> */}
 
-                <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8">
-                    <div className="max-w-7xl mx-auto">
+
+
+            {/* <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8">
+                    <div className="max-w-7xl mx-auto"> */}
+            <main className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8 flex justify-center">
+                <div className="w-full max-w-7xl">
+                    <div className="text-center mb-8">
                         <h1 className="text-4xl font-bold mb-2">Library</h1>
-                        <p className="text-slate-400 mb-8">Your central library for all educational materials organized by level, grade, and resource type.</p>
+                        <p className="text-slate-400">Your central library for all educational materials organized by level, grade, and resource type.</p>
+                    </div>
 
-                        {/* Teacher-Only Tools Section */}
-                        {user.role === 'teacher' && (
+                    {/* Primary/Secondary Tabs */}
+                    <div className="flex justify-center gap-4 mb-8">
+                        <button
+                            onClick={() => setSelectedLevel('primary')}
+                            className={`px-6 py-2 rounded-lg font-semibold transition ${selectedLevel === 'primary'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                                }`}
+                        >
+                            Primary School
+                        </button>
+                        <button
+                            onClick={() => setSelectedLevel('secondary')}
+                            className={`px-6 py-2 rounded-lg font-semibold transition ${selectedLevel === 'secondary'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                                }`}
+                        >
+                            Secondary School
+                        </button>
+                    </div>
+
+                    {/* Teacher-Only Tools Section */}
+                    {/* Teacher-Only Tools Section */}
+                    {/* {user.role === 'teacher' && (
                             <div className="mb-12">
                                 <h2 className="text-2xl font-bold mb-4 border-l-4 border-green-500 pl-3">Teacher Toolkit</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -878,12 +912,12 @@ export default function ResourcesPage() {
                                     />
                                 </div>
                             </div>
-                        )}
+                        )} */}
 
-                        {/* Library Navigation */}
-                        <div className="mb-8">
-                            {/* Level Selection */}
-                            <div className="flex gap-4 mb-6">
+                    {/* Library Navigation */}
+                    <div className="mb-8">
+                        {/* Level Selection */}
+                        {/* <div className="flex gap-4 mb-6">
                                 <button
                                     onClick={() => {
                                         setSelectedLevel('primary');
@@ -910,186 +944,187 @@ export default function ResourcesPage() {
                                     <GraduationCap className="inline-block mr-2 h-6 w-6" />
                                     Secondary School (Form 1-4)
                                 </button>
-                            </div>
+                            </div> */}
 
-                            {/* Resource Type Selection */}
-                            <div className="flex flex-wrap gap-2 border-b border-slate-700 mb-6 pb-2">
-                                {resourceTypes.map(type => (
-                                    <button
-                                        key={type.value}
-                                        onClick={() => {
-                                            setSelectedType(type.value);
-                                            setSelectedGrade('all');
-                                            setSelectedTerm('all');
-                                        }}
-                                        className={`px-4 py-2 rounded-md font-semibold transition-colors ${selectedType === type.value
-                                            ? 'bg-blue-600 text-white'
-                                            : 'text-slate-300 hover:bg-slate-700'
-                                            }`}
-                                    >
-                                        {type.label}
-                                    </button>
-                                ))}
-                            </div>
+                        {/* Resource Type Selection */}
+                        {/* Resource Type Selection */}
+                        <div className="flex flex-wrap gap-2 border-b border-slate-700 mb-6 pb-2">
+                            {allResourceTypes.map(type => (
+                                <button
+                                    key={type.value}
+                                    onClick={() => {
+                                        setSelectedType(type.value);
+                                        setSelectedGrade('all');
+                                        setSelectedTerm('all');
+                                    }}
+                                    className={`px-4 py-2 rounded-md font-semibold transition-colors ${selectedType === type.value
+                                        ? 'bg-blue-600 text-white'
+                                        : 'text-slate-300 hover:bg-slate-700'
+                                        }`}
+                                >
+                                    {type.label}
+                                </button>
+                            ))}
+                        </div>
 
-                            {/* Dynamic Filters based on Resource Type */}
-                            {(showGradeFilter || showSubjectFilter || showTermFilter || showPaperTypeFilter || showYearFilter) && (
-                                <div className="bg-slate-800 p-4 rounded-lg mb-6">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <Filter className="h-5 w-5 text-blue-400" />
-                                        <h3 className="font-semibold text-white">Filter Resources</h3>
-                                    </div>
+                        {/* Dynamic Filters based on Resource Type */}
+                        {(showGradeFilter || showSubjectFilter || showTermFilter || showPaperTypeFilter || showYearFilter) && (
+                            <div className="bg-slate-800 p-4 rounded-lg mb-6">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Filter className="h-5 w-5 text-blue-400" />
+                                    <h3 className="font-semibold text-white">Filter Resources</h3>
+                                </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                        {/* Grade Filter - Hidden for past papers */}
-                                        {showGradeFilter && (
-                                            <div>
-                                                <label className="block text-sm text-slate-400 mb-1">Class/Grade</label>
-                                                <select
-                                                    value={selectedGrade}
-                                                    onChange={(e) => setSelectedGrade(e.target.value)}
-                                                    className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
-                                                >
-                                                    <option value="all">All Classes</option>
-                                                    {currentGrades.map(grade => (
-                                                        <option key={grade.value} value={grade.value}>{grade.label}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        )}
-
-                                        {/* Subject Filter - Show for all except syllabus */}
-                                        {showSubjectFilter && (
-                                            <div>
-                                                <label className="block text-sm text-slate-400 mb-1">Subject</label>
-                                                <select
-                                                    value={selectedSubject}
-                                                    onChange={(e) => setSelectedSubject(e.target.value as Subject)}
-                                                    className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
-                                                >
-                                                    <option value="All Subjects">All Subjects</option>
-                                                    {getAvailableSubjects().map(subject => (
-                                                        <option key={subject} value={subject}>{subject}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        )}
-
-                                        {/* Term Filter - Only for schemes of work */}
-                                        {showTermFilter && (
-                                            <div>
-                                                <label className="block text-sm text-slate-400 mb-1">
-                                                    <Calendar className="inline-block h-4 w-4 mr-1" />
-                                                    Term
-                                                </label>
-                                                <select
-                                                    value={selectedTerm}
-                                                    onChange={(e) => setSelectedTerm(e.target.value)}
-                                                    className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
-                                                >
-                                                    <option value="all">All Terms</option>
-                                                    <option value="1">Term 1</option>
-                                                    <option value="2">Term 2</option>
-                                                    <option value="3">Term 3</option>
-                                                </select>
-                                            </div>
-                                        )}
-
-                                        {/* Paper Type Filter - Only for past papers */}
-                                        {showPaperTypeFilter && (
-                                            <div>
-                                                <label className="block text-sm text-slate-400 mb-1">Paper Type</label>
-                                                <select
-                                                    value={selectedPaperType}
-                                                    onChange={(e) => setSelectedPaperType(e.target.value as PaperType | '')}
-                                                    className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
-                                                >
-                                                    <option value="">All Paper Types</option>
-                                                    {getAvailablePaperTypes().map(pt => (
-                                                        <option key={pt.value} value={pt.value}>{pt.label}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        )}
-
-                                        {/* Year Filter - Only for past papers */}
-                                        {showYearFilter && (
-                                            <div>
-                                                <label className="block text-sm text-slate-400 mb-1">Year</label>
-                                                <select
-                                                    value={selectedYear}
-                                                    onChange={(e) => setSelectedYear(e.target.value)}
-                                                    className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
-                                                >
-                                                    <option value="">All Years</option>
-                                                    {availableYears.map(year => (
-                                                        <option key={year} value={year}>{year}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        )}
-
-                                        {/* Clear Filters Button */}
-                                        <div className="flex items-end">
-                                            <button
-                                                onClick={clearFilters}
-                                                className="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    {/* Grade Filter - Hidden for past papers */}
+                                    {showGradeFilter && (
+                                        <div>
+                                            <label className="block text-sm text-slate-400 mb-1">Class/Grade</label>
+                                            <select
+                                                value={selectedGrade}
+                                                onChange={(e) => setSelectedGrade(e.target.value)}
+                                                className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
                                             >
-                                                Clear Filters
-                                            </button>
+                                                <option value="all">All Classes</option>
+                                                {currentGrades.map(grade => (
+                                                    <option key={grade.value} value={grade.value}>{grade.label}</option>
+                                                ))}
+                                            </select>
                                         </div>
+                                    )}
+
+                                    {/* Subject Filter - Show for all except syllabus */}
+                                    {showSubjectFilter && (
+                                        <div>
+                                            <label className="block text-sm text-slate-400 mb-1">Subject</label>
+                                            <select
+                                                value={selectedSubject}
+                                                onChange={(e) => setSelectedSubject(e.target.value as Subject)}
+                                                className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
+                                            >
+                                                <option value="All Subjects">All Subjects</option>
+                                                {getAvailableSubjects().map(subject => (
+                                                    <option key={subject} value={subject}>{subject}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {/* Term Filter - Only for schemes of work */}
+                                    {showTermFilter && (
+                                        <div>
+                                            <label className="block text-sm text-slate-400 mb-1">
+                                                <Calendar className="inline-block h-4 w-4 mr-1" />
+                                                Term
+                                            </label>
+                                            <select
+                                                value={selectedTerm}
+                                                onChange={(e) => setSelectedTerm(e.target.value)}
+                                                className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
+                                            >
+                                                <option value="all">All Terms</option>
+                                                <option value="1">Term 1</option>
+                                                <option value="2">Term 2</option>
+                                                <option value="3">Term 3</option>
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {/* Paper Type Filter - Only for past papers */}
+                                    {showPaperTypeFilter && (
+                                        <div>
+                                            <label className="block text-sm text-slate-400 mb-1">Paper Type</label>
+                                            <select
+                                                value={selectedPaperType}
+                                                onChange={(e) => setSelectedPaperType(e.target.value as PaperType | '')}
+                                                className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
+                                            >
+                                                <option value="">All Paper Types</option>
+                                                {getAvailablePaperTypes().map(pt => (
+                                                    <option key={pt.value} value={pt.value}>{pt.label}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {/* Year Filter - Only for past papers */}
+                                    {showYearFilter && (
+                                        <div>
+                                            <label className="block text-sm text-slate-400 mb-1">Year</label>
+                                            <select
+                                                value={selectedYear}
+                                                onChange={(e) => setSelectedYear(e.target.value)}
+                                                className="w-full bg-slate-700 text-white rounded-lg p-2 border border-slate-600"
+                                            >
+                                                <option value="">All Years</option>
+                                                {availableYears.map(year => (
+                                                    <option key={year} value={year}>{year}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {/* Clear Filters Button */}
+                                    <div className="flex items-end">
+                                        <button
+                                            onClick={clearFilters}
+                                            className="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                                        >
+                                            Clear Filters
+                                        </button>
                                     </div>
                                 </div>
-                            )}
-                        </div>
-
-                        {/* Resource Display by Grade */}
-                        <div className="space-y-8">
-                            <h2 className="text-2xl font-bold border-l-4 border-blue-500 pl-3">
-                                {selectedLevel === 'primary' ? 'Primary School' : 'Secondary School'} - {resourceLabels[selectedType]}
-                                <span className="text-sm font-normal text-slate-400 ml-4">
-                                    {selectedGrade !== 'all' && showGradeFilter && `Class: ${currentGrades.find(g => g.value === selectedGrade)?.label} `}
-                                    {selectedSubject !== 'All Subjects' && showSubjectFilter && `Subject: ${selectedSubject} `}
-                                    {selectedTerm !== 'all' && showTermFilter && `Term: ${selectedTerm} `}
-                                    {selectedYear && showYearFilter && `Year: ${selectedYear} `}
-                                    {selectedPaperType && showPaperTypeFilter && `Type: ${paperTypeLabels[selectedPaperType]} `}
-                                </span>
-                            </h2>
-
-                            {selectedLevel === 'primary'
-                                ? primaryGrades.map(grade => (
-                                    <GradeSection
-                                        key={grade.value}
-                                        level="primary"
-                                        grade={grade.value}
-                                        label={grade.label}
-                                        selectedType={selectedType}
-                                        selectedYear={selectedYear}
-                                        selectedSubject={selectedSubject}
-                                        selectedPaperType={selectedPaperType || undefined}
-                                        selectedGrade={selectedGrade}
-                                        selectedTerm={selectedTerm}
-                                    />
-                                ))
-                                : secondaryGrades.map(grade => (
-                                    <GradeSection
-                                        key={grade.value}
-                                        level="secondary"
-                                        grade={grade.value}
-                                        label={grade.label}
-                                        selectedType={selectedType}
-                                        selectedYear={selectedYear}
-                                        selectedSubject={selectedSubject}
-                                        selectedPaperType={selectedPaperType || undefined}
-                                        selectedGrade={selectedGrade}
-                                        selectedTerm={selectedTerm}
-                                    />
-                                ))
-                            }
-                        </div>
+                            </div>
+                        )}
                     </div>
-                </main>
-            </div>
+
+                    {/* Resource Display by Grade */}
+                    <div className="space-y-8">
+                        <h2 className="text-2xl font-bold border-l-4 border-blue-500 pl-3">
+                            {selectedLevel === 'primary' ? 'Primary School' : 'Secondary School'} - {resourceLabels[selectedType]}
+                            <span className="text-sm font-normal text-slate-400 ml-4">
+                                {selectedGrade !== 'all' && showGradeFilter && `Class: ${currentGrades.find(g => g.value === selectedGrade)?.label} `}
+                                {selectedSubject !== 'All Subjects' && showSubjectFilter && `Subject: ${selectedSubject} `}
+                                {selectedTerm !== 'all' && showTermFilter && `Term: ${selectedTerm} `}
+                                {selectedYear && showYearFilter && `Year: ${selectedYear} `}
+                                {selectedPaperType && showPaperTypeFilter && `Type: ${paperTypeLabels[selectedPaperType]} `}
+                            </span>
+                        </h2>
+
+                        {selectedLevel === 'primary'
+                            ? primaryGrades.map(grade => (
+                                <GradeSection
+                                    key={grade.value}
+                                    level="primary"
+                                    grade={grade.value}
+                                    label={grade.label}
+                                    selectedType={selectedType}
+                                    selectedYear={selectedYear}
+                                    selectedSubject={selectedSubject}
+                                    selectedPaperType={selectedPaperType || undefined}
+                                    selectedGrade={selectedGrade}
+                                    selectedTerm={selectedTerm}
+                                />
+                            ))
+                            : secondaryGrades.map(grade => (
+                                <GradeSection
+                                    key={grade.value}
+                                    level="secondary"
+                                    grade={grade.value}
+                                    label={grade.label}
+                                    selectedType={selectedType}
+                                    selectedYear={selectedYear}
+                                    selectedSubject={selectedSubject}
+                                    selectedPaperType={selectedPaperType || undefined}
+                                    selectedGrade={selectedGrade}
+                                    selectedTerm={selectedTerm}
+                                />
+                            ))
+                        }
+                    </div>
+                </div>
+            </main>
+
         </>
     );
 }
