@@ -509,6 +509,16 @@ export default function App() {
     md:relative md:translate-x-0 md:flex
     w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-full overflow-y-auto custom-scrollbar
 `}>
+
+                    {/* Close button - only visible on mobile */}
+                    <div className="flex justify-end p-4 border-b border-slate-800 md:hidden">
+                        <button
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
+                        >
+                            <X className="h-5 w-5 text-slate-400" />
+                        </button>
+                    </div>
                     <div className="p-4 space-y-2 flex-1">
                         {mainMenus.map((menu) => (
                             <div key={menu.id} className="space-y-1">
