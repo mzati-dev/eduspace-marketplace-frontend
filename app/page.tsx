@@ -24,7 +24,7 @@ type SignupStage = 'role-selection' | 'form';
 type TabView = 'library' | 'codeLab' | 'careers' | 'certifications' | 'gadgets' | 'primaryLessons' | 'secondaryLessons' | 'primaryTutors' | 'secondaryTutors' | 'tutors' | 'jobs' | 'scholarships' | 'lessons';
 export default function App() {
     const [authView, setAuthView] = useState<AuthView>('none');
-    const [activeTab, setActiveTab] = useState<TabView>('lessons');
+    const [activeTab, setActiveTab] = useState<TabView>('primaryLessons');
     const [expandedMenu, setExpandedMenu] = useState<TabView | null>('lessons');
     const [selectedLevel, setSelectedLevel] = useState<string>(''); // Added state to make dropdowns "work"
 
@@ -223,7 +223,26 @@ export default function App() {
         },
     ];
 
-    const [expandedMainMenu, setExpandedMainMenu] = useState<string | null>('learn');
+    const [expandedMainMenu, setExpandedMainMenu] = useState<string | null>('marketplace');
+
+    // Determine which main menu is active based on current tab
+    const getActiveMainMenu = () => {
+        if (activeTab === 'primaryLessons' || activeTab === 'secondaryLessons') {
+            return 'marketplace';
+        }
+        if (activeTab === 'primaryTutors' || activeTab === 'secondaryTutors') {
+            return 'tutorsMenu';
+        }
+        if (activeTab === 'library' || activeTab === 'codeLab' || activeTab === 'gadgets') {
+            return 'learn';
+        }
+        if (activeTab === 'careers' || activeTab === 'certifications' || activeTab === 'jobs' || activeTab === 'scholarships') {
+            return 'careerHubMenu';
+        }
+        return null;
+    };
+
+    const activeMainMenu = getActiveMainMenu();
 
     const educationLevels = ['Primary School', 'Secondary', 'Tertiary', 'Vocational'];
 
@@ -418,21 +437,20 @@ export default function App() {
         <div className="h-screen overflow-hidden bg-slate-900 text-white font-sans relative">
 
             {/* PUBLIC NAVBAR W/ SEARCH IN HEADER */}
-            <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-xl sticky top-0 z-40 h-[80px] flex items-center">
-                <div className="w-full px-6 flex justify-between items-center gap-6">
+            <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-xl sticky top-0 z-40 min-h-[70px] sm:h-[80px] flex items-center">
+                <div className="w-full px-4 sm:px-6 flex flex-wrap sm:flex-nowrap justify-between items-center gap-3 sm:gap-6">
                     {/* Logo Area */}
                     <div className="flex items-center gap-2 min-w-max">
                         <Menu
-                            className="h-6 w-6 text-slate-400 md:hidden cursor-pointer"
+                            className="h-6 w-6 text-slate-400 cursor-pointer sm:hidden"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         />
-                        {/* <BookOpen className="h-8 w-8 text-blue-500" />  //edumarketplacelogo.png */}
                         <img
                             src="/edumarketplacelogo.png"
                             alt="Eduspace Marketplace Logo"
-                            className="h-12 w-12 object-contain"
+                            className="h-10 sm:h-12 w-auto object-contain"
                         />
-                        <h1 className="text-lg sm:text-2xl font-bold tracking-tight leading-tight whitespace-nowrap">
+                        <h1 className="text-base sm:text-xl font-bold tracking-tight leading-tight whitespace-nowrap hidden sm:block">
                             <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                                 EduSpace
                             </span>
@@ -440,25 +458,25 @@ export default function App() {
                         </h1>
                     </div>
 
-                    {/* RESTORED: Beautiful Glassmorphism Search Bar */}
-                    <div className="flex-1 max-w-2xl hidden md:block">
-                        <div className="w-full flex items-center bg-slate-800/80 border border-slate-600/50 hover:border-slate-500 rounded-full p-1.5 shadow-xl backdrop-blur-md focus-within:ring-2 focus-within:ring-blue-500/50 focus-within:shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-all duration-300">
+                    {/* Search Bar - hidden on mobile */}
+                    <div className="hidden sm:flex flex-1 max-w-2xl">
+                        <div className="w-full flex items-center bg-slate-800/80 border border-slate-600/50 rounded-full p-1.5">
                             <Search className="text-slate-400 ml-3 h-5 w-5" />
                             <input
                                 type="text"
-                                placeholder="Search for subjects, tutors, or gadgets..."
-                                className="flex-1 bg-transparent border-none text-white px-3 py-2 text-sm md:text-base focus:outline-none placeholder-slate-500"
+                                placeholder="Search..."
+                                className="flex-1 bg-transparent border-none text-white px-3 py-2 text-sm focus:outline-none"
                             />
-                            <button className="bg-blue-500 hover:bg-blue-600 px-6 py-2 rounded-full font-bold shadow-lg transition cursor-pointer text-sm">
+                            <button className="bg-blue-500 hover:bg-blue-600 px-6 py-2 rounded-full text-sm font-bold">
                                 Search
                             </button>
                         </div>
                     </div>
 
                     {/* Auth Buttons */}
-                    <div className="flex items-center gap-4 min-w-max">
-                        <button onClick={() => setAuthView('login')} className="font-semibold text-sm text-slate-300 hover:text-white transition cursor-pointer">Log In</button>
-                        <button onClick={() => { setAuthView('signup'); setSignupStage('role-selection'); }} className="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 rounded-lg text-sm font-semibold shadow-[0_0_15px_rgba(59,130,246,0.4)] transition cursor-pointer">Sign Up</button>
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <button onClick={() => setAuthView('login')} className="text-xs sm:text-sm text-slate-300 hover:text-white">Log In</button>
+                        <button onClick={() => { setAuthView('signup'); setSignupStage('role-selection'); }} className="px-3 sm:px-5 py-1.5 sm:py-2.5 bg-blue-500 hover:bg-blue-600 rounded-lg text-xs sm:text-sm font-semibold">Sign Up</button>
                     </div>
                 </div>
             </nav>
@@ -495,7 +513,6 @@ export default function App() {
                         {mainMenus.map((menu) => (
                             <div key={menu.id} className="space-y-1">
                                 <button
-                                    //   onClick={() => setExpandedMainMenu(expandedMainMenu === menu.id ? null : menu.id)}  
                                     onClick={() => {
                                         setExpandedMainMenu(expandedMainMenu === menu.id ? null : menu.id);
                                         if (menu.id === 'marketplace') {
@@ -511,7 +528,10 @@ export default function App() {
                                             setActiveTab('careers');
                                         }
                                     }}
-                                    className={`w-full flex justify-between items-center p-3 rounded-lg transition-colors cursor-pointer text-slate-300 hover:bg-slate-800`}
+                                    className={`w-full flex justify-between items-center p-3 rounded-lg transition-colors cursor-pointer ${activeMainMenu === menu.id
+                                        ? 'bg-blue-500/20 text-blue-400'
+                                        : 'text-slate-300 hover:bg-slate-800'
+                                        }`}
                                 >
                                     <div className="flex items-center gap-3">
                                         <menu.icon className="h-5 w-5 text-slate-400" />
